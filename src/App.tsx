@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ApiTest } from "./dev/ApiTest";
 
 import "./App.css";
 
@@ -8,6 +9,7 @@ function App() {
   return (
     <>
       <h1>Fantastic elastic panda</h1>
+      <ApiTest />
     </>
   );
 }
