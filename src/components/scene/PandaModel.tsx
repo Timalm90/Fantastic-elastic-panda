@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import { useGLTF } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
 import type { GLTF } from 'three-stdlib'
 
 type GLTFResult = GLTF & {
@@ -16,7 +17,12 @@ type GLTFResult = GLTF & {
   animations: any[]
 }
 
-export const Model = React.forwardRef<THREE.Group, any>((props, ref) => {
+interface ModelProps {
+  blendshapes?: Record<string, number>
+}
+
+export const Model = React.forwardRef<THREE.Group, ModelProps>((props, ref) => {
+  const { blendshapes = {}, ...groupProps } = props
   const { nodes, materials } = useGLTF('/panda.glb') as unknown as GLTFResult
   const meshRef = useRef<THREE.Mesh>(null)
 
@@ -26,8 +32,20 @@ export const Model = React.forwardRef<THREE.Group, any>((props, ref) => {
     }
   }, [])
 
+  useFrame(() => {
+    const mesh = meshRef.current
+    if (!mesh?.morphTargetDictionary || !mesh.morphTargetInfluences) return
+
+    for (const [key, value] of Object.entries(blendshapes)) {
+      const idx = mesh.morphTargetDictionary[key]
+      if (idx !== undefined) {
+        mesh.morphTargetInfluences[idx] = value
+      }
+    }
+  })
+
   return (
-    <group ref={ref} {...props} dispose={null}>
+    <group ref={ref} {...groupProps} dispose={null}>
       <group rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
         <mesh
           ref={meshRef}
