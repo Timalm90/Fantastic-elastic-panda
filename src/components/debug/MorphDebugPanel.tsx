@@ -45,7 +45,10 @@ export function MorphDebugPanel({ blendshapes, onChange }: Props) {
           <input
             type="range"
             min={0}
-            max={1}
+            max={1} /* Maximum morph target influence. 
+            1 = the original sculpted shape from the 3D model. 
+            Values above 1 exaggerate the deformation for more extreme expressions. */
+
             step={0.01} /* Allow finer control over morph target values. Increase / decrease to change how sensitive the slider is */
             value={value}
             onChange={(e) => onChange(key, parseFloat(e.target.value))}
