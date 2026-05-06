@@ -12,18 +12,15 @@ import { useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import type { GLTF } from 'three-stdlib'
 
-/**
- * Type definition for the loaded GLTF model structure.
- * Extends GLTF with specific nodes (mesh parts) and materials used by the panda.
- */
+
 type GLTFResult = GLTF & {
   nodes: {
-    Panda001: THREE.Mesh           // Main panda body mesh
+    Panda001: THREE.Mesh           // Main panda mesh
     EyeL: THREE.Mesh               // Left eye mesh
     EyeR: THREE.Mesh               // Right eye mesh
   }
   materials: {
-    Panda: THREE.MeshStandardMaterial  // Panda fur/body material
+    Panda: THREE.MeshStandardMaterial  // Panda material
     Eyes: THREE.MeshStandardMaterial   // Eye material
   }
   animations: any[]
@@ -31,7 +28,6 @@ type GLTFResult = GLTF & {
 
 /**
  * Props interface for the Model component.
- * blendshapes: Record of morph target names to their influence values (0-1)
  */
 interface ModelProps {
   blendshapes?: Record<string, number>
