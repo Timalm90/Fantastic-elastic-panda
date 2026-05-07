@@ -31,7 +31,7 @@ export default function App() {
             <pointLight position={[-10, -10, -5]} intensity={1} />
             <Model 
               blendshapes={blendshapes} 
-              springConfig={{ stiffness: 400, damping: 14, mass: 1 }}
+              springConfig={{ stiffness: 100, damping: 14, mass: 1 }}
             />
             <Environment preset="studio" blur={0.5} background resolution={64} />
             <OrbitControls />

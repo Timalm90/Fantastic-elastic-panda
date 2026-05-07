@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import type { ControlZone, BlendshapeKey, BlendshapeValues } from '../types/blendshape'
+import { CONSTRAINTS } from '../config/controlConstraints'
 
 /**
  * Maximum pixel drag distance that maps to a morph value of 1.0.
@@ -57,6 +58,30 @@ export function useBlendshapeControl(
       // Y axis: invert because screen Y is flipped (drag up = negative dy)
       applyAxis(zone.y, dy, true)
       applyAxis(zone.x, dx)
+
+      // Apply constraints
+      for (const constraint of CONSTRAINTS) {
+        const currentValue = next[constraint.target] ?? 0
+        let clampedValue = currentValue
+
+        if (constraint.min) {
+          const minAllowed = constraint.min(next)
+          if (clampedValue < minAllowed) {
+            clampedValue = minAllowed
+            console.log(`Constraint ${constraint.target}: clamped min to ${minAllowed.toFixed(3)}`)
+          }
+        }
+
+        if (constraint.max) {
+          const maxAllowed = constraint.max(next)
+          if (clampedValue > maxAllowed) {
+            clampedValue = maxAllowed
+            console.log(`Constraint ${constraint.target}: clamped max to ${maxAllowed.toFixed(3)}`)
+          }
+        }
+
+        next[constraint.target] = clampedValue
+      }
 
       return next
     })

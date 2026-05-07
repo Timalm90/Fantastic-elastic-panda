@@ -28,7 +28,7 @@ export function DragZone({ zone, onDrag, onRelease, style }: DragZoneProps) {
 
   function onMouseUp() {
     originRef.current = null
-    onRelease(zone)
+    // onRelease(zone)
     window.removeEventListener('mousemove', onMouseMove)
     window.removeEventListener('mouseup', onMouseUp)
   }

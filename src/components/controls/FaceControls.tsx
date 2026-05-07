@@ -36,7 +36,7 @@ export const FaceControls: React.FC<FaceControlsProps> = ({ onBlendshapesChange 
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>({} as BlendshapeValues)
   
   // useBlendshapeControl converts drag deltas (dx, dy) into blendshape values
-  const { applyDrag, resetZone } = useBlendshapeControl(setBlendshapes)
+  const { applyDrag } = useBlendshapeControl(setBlendshapes)
 
   // Notify parent component whenever blendshapes change
   React.useEffect(() => {
@@ -51,7 +51,7 @@ export const FaceControls: React.FC<FaceControlsProps> = ({ onBlendshapesChange 
           key={zone.id}
           zone={zone}
           onDrag={applyDrag}
-          onRelease={resetZone}
+          onRelease={() => {}}
           style={ZONE_POSITIONS[zone.id]}
         />
       ))}
