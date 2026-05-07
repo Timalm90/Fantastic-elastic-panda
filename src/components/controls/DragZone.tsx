@@ -15,6 +15,7 @@ export function DragZone({ zone, onDrag, onRelease, style }: DragZoneProps) {
   // ── Mouse ──────────────────────────────────────────────
 
   function onMouseDown(e: React.MouseEvent) {
+    e.preventDefault()
     originRef.current = { x: e.clientX, y: e.clientY }
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('mouseup', onMouseUp)
@@ -52,6 +53,8 @@ export function DragZone({ zone, onDrag, onRelease, style }: DragZoneProps) {
 
   return (
     <div
+      draggable={false}
+      onDragStart={(e) => e.preventDefault()}
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}

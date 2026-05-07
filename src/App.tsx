@@ -10,7 +10,6 @@ import { Canvas } from '@react-three/fiber'
 import { Environment, OrbitControls } from '@react-three/drei'
 import { Model } from './components/scene/PandaModel'
 import { FaceControls } from './components/controls/FaceControls'
-import { MorphDebugPanel } from './components/debug/MorphDebugPanel'
 import type { BlendshapeValues } from './types/blendshape'
 
 export default function App() {
@@ -30,7 +29,10 @@ export default function App() {
             <ambientLight intensity={0.4} />
             <pointLight position={[10, 10, 5]} intensity={1} />
             <pointLight position={[-10, -10, -5]} intensity={1} />
-            <Model blendshapes={blendshapes} />
+            <Model 
+              blendshapes={blendshapes} 
+              springConfig={{ stiffness: 400, damping: 14, mass: 1 }}
+            />
             <Environment preset="studio" blur={0.5} background resolution={64} />
             <OrbitControls />
           </Suspense>
@@ -39,14 +41,6 @@ export default function App() {
         {/* All facial control drag zones */}
         <FaceControls onBlendshapesChange={setBlendshapes} />
       </div>
-
-      {/* Debug panel showing all blendshape values with sliders */}
-      <MorphDebugPanel 
-        blendshapes={blendshapes} 
-        onChange={(key, value) =>
-          setBlendshapes(prev => ({ ...prev, [key]: value } as BlendshapeValues))
-        } 
-      />
     </>
   )
 }

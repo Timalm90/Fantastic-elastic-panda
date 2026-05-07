@@ -5,7 +5,9 @@ import type { ControlZone, BlendshapeKey, BlendshapeValues } from '../types/blen
  * Maximum pixel drag distance that maps to a morph value of 1.0.
  * Drag this many pixels → full influence. Tweak to feel right.
  */
-const DRAG_RANGE = 80
+const DEFAULT_DRAG_RANGE = 300
+const DEFAULT_MIN = 0
+const DEFAULT_MAX = 1
 
 /**
  * Given a control zone and a drag delta in pixels,
@@ -15,6 +17,16 @@ export function useBlendshapeControl(
   setBlendshapes: React.Dispatch<React.SetStateAction<BlendshapeValues>>
 ) {
   const applyDrag = useCallback((zone: ControlZone, dx: number, dy: number) => {
+
+        // Use per-zone overrides, falling back to defaults
+    const dragRange = zone.sensitivity
+      ? DEFAULT_DRAG_RANGE / zone.sensitivity  // higher sensitivity = fewer pixels needed
+      : DEFAULT_DRAG_RANGE
+
+    const min = zone.minValue ?? DEFAULT_MIN
+    const max = zone.maxValue ?? DEFAULT_MAX
+
+
     setBlendshapes(prev => {
       const next = { ...prev }
 
@@ -26,7 +38,9 @@ export function useBlendshapeControl(
       ) {
         if (!mapping) return
         const d = invert ? -delta : delta
-        const value = Math.min(1, Math.abs(d) / DRAG_RANGE)
+        // Clamp value between min and max instead of always 0-1
+        const raw = Math.abs(d) / dragRange
+        const value = Math.min(max, Math.max(min, raw))
 
         if (d > 0) {
           next[mapping.positive] = value
@@ -55,7 +69,7 @@ export function useBlendshapeControl(
   const resetZone = useCallback((zone: ControlZone) => {
     setBlendshapes(prev => {
       const next = { ...prev }
-      const keys: BlendshapeKey[] = [
+      const keys = [
         zone.x?.positive, zone.x?.negative,
         zone.y?.positive, zone.y?.negative,
       ].filter(Boolean) as BlendshapeKey[]

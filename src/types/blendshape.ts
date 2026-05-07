@@ -22,8 +22,8 @@ export type BlendshapeValues = Record<BlendshapeKey, number>
  * Negative drag (down/left) drives the second key.
  */
 export interface AxisMapping {
-  positive: BlendshapeKey   // e.g. drag up → R_Ear_Up
-  negative: BlendshapeKey   // e.g. drag down → R_Ear_Down
+  positive: BlendshapeKey | null   // e.g. drag up → R_Ear_Up
+  negative: BlendshapeKey | null   // e.g. drag down → R_Ear_Down
 }
 
 /**
@@ -33,6 +33,9 @@ export interface AxisMapping {
 export interface ControlZone {
   id: string
   label: string
-  x?: AxisMapping   // horizontal drag — optional (Nose has no X axis for example)
-  y?: AxisMapping   // vertical drag — optional
+  x?: AxisMapping      // horizontal drag — optional (Nose has no X axis for example)
+  y?: AxisMapping      // vertical drag — optional
+  sensitivity?: number // Multiplier for drag sensitivity (default: 1.0, higher = more sensitive)
+  minValue?: number    // Minimum blendshape value (default: 0)
+  maxValue?: number    // Maximum blendshape value (default: 1)
 }
