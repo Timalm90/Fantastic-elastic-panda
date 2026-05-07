@@ -68,7 +68,6 @@ export function useBlendshapeControl(
           const minAllowed = constraint.min(next)
           if (clampedValue < minAllowed) {
             clampedValue = minAllowed
-            console.log(`Constraint ${constraint.target}: clamped min to ${minAllowed.toFixed(3)}`)
           }
         }
 
@@ -76,7 +75,6 @@ export function useBlendshapeControl(
           const maxAllowed = constraint.max(next)
           if (clampedValue > maxAllowed) {
             clampedValue = maxAllowed
-            console.log(`Constraint ${constraint.target}: clamped max to ${maxAllowed.toFixed(3)}`)
           }
         }
 
