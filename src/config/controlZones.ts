@@ -28,13 +28,13 @@ export const CONTROL_ZONES: ControlZone[] = [
   {
     id: 'r_cheek',
     label: 'Right Cheek',
-    x: { positive: 'R_Cheek_Right', negative: 'R_Cheek_Down' },
+    x: { positive: 'R_Cheek_Right', negative: null },
     y: { positive: 'R_Cheek_Up',    negative: 'R_Cheek_Down'  },
   },
   {
     id: 'l_cheek',
     label: 'Left Cheek',
-    x: { positive: 'L_Cheek_Left', negative: 'L_Cheek_Down' },
+    x: { positive: null, negative: 'L_Cheek_Left'},
     y: { positive: 'L_Cheek_Up',   negative: 'L_Cheek_Down' },
   },
   {
