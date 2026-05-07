@@ -46,7 +46,7 @@ export default function App() {
             <pointLight position={[10, 10, 5]} intensity={1} />
             <pointLight position={[-10, -10, -5]} intensity={1} />
             <Model blendshapes={blendshapes} />
-            <Environment preset="studio" blur={0.5} background resolution={64} />
+            <Environment preset="sunset" blur={0.2} background resolution={64} />
             <OrbitControls />
           </Suspense>
         </Canvas>
