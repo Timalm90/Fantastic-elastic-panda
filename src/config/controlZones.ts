@@ -4,7 +4,7 @@ export const CONTROL_ZONES: ControlZone[] = [
   {
     id: 'r_ear',
     label: 'Right Ear',
-    x: { positive: 'R_Ear_Right', negative: 'R_Ear_Right' }, // adjust once tested
+    x: { positive: 'R_Ear_Right', negative: 'R_Ear_Left' }, // adjust once tested
     y: { positive: 'R_Ear_Up',    negative: 'R_Ear_Down'   },
   },
   {
@@ -28,13 +28,13 @@ export const CONTROL_ZONES: ControlZone[] = [
   {
     id: 'r_cheek',
     label: 'Right Cheek',
-    x: { positive: 'R_Cheek_Right', negative: null },
+    x: { positive: 'R_Cheek_Right', negative: 'R_Cheek_Down' },
     y: { positive: 'R_Cheek_Up',    negative: 'R_Cheek_Down'  },
   },
   {
     id: 'l_cheek',
     label: 'Left Cheek',
-    x: { positive: null, negative: 'L_Cheek_Left' },
+    x: { positive: 'L_Cheek_Left', negative: 'L_Cheek_Down' },
     y: { positive: 'L_Cheek_Up',   negative: 'L_Cheek_Down' },
   },
   {

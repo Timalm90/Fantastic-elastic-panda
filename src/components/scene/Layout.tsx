@@ -21,9 +21,7 @@ const getAllBlendshapeKeys = (): string[] => {
     if (zone.y?.positive) keys.add(zone.y.positive)
     if (zone.y?.negative) keys.add(zone.y.negative)
   })
-  const result = Array.from(keys)
-  console.log('Extracted blendshape keys:', result)
-  return result
+  return Array.from(keys)
 }
 
 const defaultBlendshapes = Object.fromEntries(
