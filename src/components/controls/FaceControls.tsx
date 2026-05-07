@@ -22,14 +22,14 @@ interface FaceControlsProps {
  * Values are percentage-based so they scale with viewport size.
  */
 const ZONE_POSITIONS: Record<string, React.CSSProperties> = {
-  r_ear:   { top: '10%', left: '65%' },
-  l_ear:   { top: '10%', left: '30%' },
-  r_brow:  { top: '28%', left: '60%' },
-  l_brow:  { top: '28%', left: '35%' },
-  r_cheek: { top: '50%', left: '63%' },
-  l_cheek: { top: '50%', left: '30%' },
-  nose:    { top: '48%', left: '48%' },
-  mouth:   { top: '62%', left: '46%' },
+  r_ear:   { top: '30%', left: '65%' },
+  l_ear:   { top: '30%', left: '30%' },
+  r_brow:  { top: '38%', left: '55%' },
+  l_brow:  { top: '37%', left: '42%' },
+  r_cheek: { top: '55%', left: '60%' },
+  l_cheek: { top: '55%', left: '36%' },
+  nose:    { top: '53%', left: '48%' },
+  mouth:   { top: '67%', left: '48%' },
 }
 
 export const FaceControls: React.FC<FaceControlsProps> = ({ onBlendshapesChange }) => {
@@ -43,6 +43,40 @@ export const FaceControls: React.FC<FaceControlsProps> = ({ onBlendshapesChange 
     onBlendshapesChange?.(blendshapes)
   }, [blendshapes, onBlendshapesChange])
 
+  // Calculate dynamic position for a control zone based on current blendshape values
+  const getZoneStyle = (zone: ControlZone): React.CSSProperties => {
+    const baseStyle = ZONE_POSITIONS[zone.id] || {}
+    const maxOffsetX = zone.displayOffsetX ?? 60
+    const maxOffsetY = zone.displayOffsetY ?? 60
+    const maxOffsetYPositive = zone.displayOffsetYPositive ?? maxOffsetY
+    const maxOffsetYNegative = zone.displayOffsetYNegative ?? maxOffsetY
+
+    let offsetX = 0
+    let offsetY = 0
+
+    // Calculate X offset from blendshape values
+    if (zone.x) {
+      const positiveValue = blendshapes[zone.x.positive] ?? 0
+      const negativeValue = blendshapes[zone.x.negative] ?? 0
+      offsetX = (positiveValue - negativeValue) * maxOffsetX
+    }
+
+    // Calculate Y offset from blendshape values (inverted because screen Y is flipped)
+    if (zone.y) {
+      const positiveValue = blendshapes[zone.y.positive] ?? 0
+      const negativeValue = blendshapes[zone.y.negative] ?? 0
+      const netY = positiveValue - negativeValue
+      // Use separate offsets for positive (up) vs negative (down) movement
+      offsetY = -(netY > 0 ? netY * maxOffsetYPositive : netY * maxOffsetYNegative)
+    }
+
+    return {
+      ...baseStyle,
+      transform: `translate(${offsetX}px, ${offsetY}px)`,
+      transition: 'transform 0.2s ease-out',
+    }
+  }
+
   return (
     <>
       {/* Render a DragZone for each control region on the face */}
@@ -52,7 +86,7 @@ export const FaceControls: React.FC<FaceControlsProps> = ({ onBlendshapesChange 
           zone={zone}
           onDrag={applyDrag}
           onRelease={() => {}}
-          style={ZONE_POSITIONS[zone.id]}
+          style={getZoneStyle(zone)}
         />
       ))}
     </>

@@ -38,4 +38,8 @@ export interface ControlZone {
   sensitivity?: number // Multiplier for drag sensitivity (default: 1.0, higher = more sensitive)
   minValue?: number    // Minimum blendshape value (default: 0)
   maxValue?: number    // Maximum blendshape value (default: 1)
+  displayOffsetX?: number // Max pixels zone travels horizontally when blendshape is at max (default: 60)
+  displayOffsetY?: number // Max pixels zone travels vertically when blendshape is at max (default: 60)
+  displayOffsetYPositive?: number // Max pixels zone travels upward (overrides displayOffsetY for positive Y)
+  displayOffsetYNegative?: number // Max pixels zone travels downward (overrides displayOffsetY for negative Y)
 }

@@ -44,14 +44,14 @@ export function useBlendshapeControl(
         const value = Math.min(max, Math.max(min, raw))
 
         if (d > 0) {
-          next[mapping.positive] = value
-          next[mapping.negative] = 0
+          if (mapping.positive) next[mapping.positive] = value
+          if (mapping.negative) next[mapping.negative] = 0
         } else if (d < 0) {
-          next[mapping.negative] = value
-          next[mapping.positive] = 0
+          if (mapping.negative) next[mapping.negative] = value
+          if (mapping.positive) next[mapping.positive] = 0
         } else {
-          next[mapping.positive] = 0
-          next[mapping.negative] = 0
+          if (mapping.positive) next[mapping.positive] = 0
+          if (mapping.negative) next[mapping.negative] = 0
         }
       }
 
