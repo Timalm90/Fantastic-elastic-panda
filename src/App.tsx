@@ -16,7 +16,9 @@ export default function App() {
   const [cameraZ, setCameraZ] = useState(4.3)
   const [cameraFov, setCameraFov] = useState(56)
   const [rotationX, setRotationX] = useState(0.2)
-  const ambientLightRef = useRef(3)
+  const [light1Color, setLight1Color] = useState('#0450d5')
+  const [light2Color, setLight2Color] = useState('#ff690f')
+  const ambientLightRef = useRef(null)
   const pointLight1Ref = useRef(null)
   const pointLight2Ref = useRef(null)
 
@@ -31,8 +33,8 @@ export default function App() {
         >
           <Suspense fallback={null}>
             <ambientLight ref={ambientLightRef} intensity={3} />
-           {/*<pointLight ref={pointLight1Ref} position={[10, 10, 5]} intensity={1} /> */} 
-            {/*<pointLight ref={pointLight2Ref} position={[-10, -10, -5]} intensity={1} /> */} 
+           <pointLight ref={pointLight1Ref} position={[10, 10, 5]} intensity={1} />
+            <pointLight ref={pointLight2Ref} position={[-10, -10, -5]} intensity={1} />
             <SceneDebugController 
               ambientLightRef={ambientLightRef}
               pointLight1Ref={pointLight1Ref}
@@ -52,14 +54,20 @@ export default function App() {
               setEnvIntensity={setEnvIntensity}
               setEnvBlur={setEnvBlur}
               envRotation={envRotation}       
-              setEnvRotation={setEnvRotation} 
+              setEnvRotation={setEnvRotation}
+              light1Color={light1Color}
+              setLight1Color={setLight1Color}
+              light2Color={light2Color}
+              setLight2Color={setLight2Color}
             />
             <Model 
               blendshapes={blendshapes} 
               springConfig={{ stiffness: 100, damping: 14, mass: 1 }}
+              receiveShadow
+              castShadow
             />
             <Environment 
-              preset="apartment" 
+              preset="studio"
               blur={envBlur} 
               background 
               resolution={64}  

@@ -16,6 +16,8 @@ type GLTFResult = GLTF & {
 interface ModelProps {
   blendshapes?: Record<string, number>
   springConfig?: SpringConfig
+  receiveShadow?: boolean
+  castShadow?: boolean
 }
 
 export const Model = React.forwardRef<THREE.Group, ModelProps>((props, ref) => {
@@ -54,6 +56,8 @@ export const Model = React.forwardRef<THREE.Group, ModelProps>((props, ref) => {
           morphTargetDictionary={nodes.Panda001.morphTargetDictionary}
           morphTargetInfluences={nodes.Panda001.morphTargetInfluences}
           position={[0, 62.02, 29.72]}
+          receiveShadow={props.receiveShadow}
+          castShadow={props.castShadow}
         >
           <mesh geometry={nodes.EyeL.geometry} material={materials.Panda} position={[-30, 14, -27]} rotation={[Math.PI / 2, 0, 0]} scale={[0.86, 1.29, 0.86]} />
           <mesh geometry={nodes.EyeR.geometry} material={materials.Panda} position={[30, 14, -27]} rotation={[Math.PI / 2, 0, 0]} scale={[0.86, 1.29, 0.86]} />

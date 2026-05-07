@@ -22,7 +22,11 @@ interface Props {
   setEnvIntensity: (value: number) => void
   setEnvBlur: (value: number) => void
   envRotation: number
-    setEnvRotation: (value: number) => void
+  setEnvRotation: (value: number) => void
+  light1Color: string
+  setLight1Color: (value: string) => void
+  light2Color: string
+  setLight2Color: (value: string) => void
 }
 
 /**
@@ -50,7 +54,11 @@ export function SceneDebugController({
   setEnvIntensity, 
   setEnvBlur,
   envRotation,
-    setEnvRotation,
+  setEnvRotation,
+  light1Color,
+  setLight1Color,
+  light2Color,
+  setLight2Color,
 }: Props) {
   const { camera } = useThree()
 
@@ -61,14 +69,16 @@ export function SceneDebugController({
     cameraFov: { value: cameraFov, min: 10, max: 120, step: 1 },
     rotationX: { value: rotationX || 0, min: -Math.PI, max: Math.PI, step: 0.1 },
     ambientIntensity: { value: 3, min: 0, max: 3, step: 0.1 },
-    light1Intensity: { value: 1, min: 0, max: 3, step: 0.1 },
-    light1X: { value: 10, min: -30, max: 30, step: 0.5 },
-    light1Y: { value: 10, min: -30, max: 30, step: 0.5 },
-    light1Z: { value: 5, min: -30, max: 30, step: 0.5 },
-    light2Intensity: { value: 1, min: 0, max: 3, step: 0.1 },
-    light2X: { value: -10, min: -30, max: 30, step: 0.5 },
-    light2Y: { value: -10, min: -30, max: 30, step: 0.5 },
-    light2Z: { value: -5, min: -30, max: 30, step: 0.5 },
+    light1Intensity: { value: 500, min: 0, max: 500, step: 1 },
+    light1X: { value: 25.5, min: -30, max: 30, step: 0.5 },
+    light1Y: { value: 5.5, min: -30, max: 30, step: 0.5 },
+    light1Z: { value: 12.5, min: -30, max: 30, step: 0.5 },
+    light1Color: light1Color,
+    light2Intensity: { value: 173, min: 0, max: 500, step: 1 },
+    light2X: { value: -6.5, min: -30, max: 30, step: 0.5 },
+    light2Y: { value: 0.5, min: -30, max: 30, step: 0.5 },
+    light2Z: { value: 4.5, min: -30, max: 30, step: 0.5 },
+    light2Color: light2Color,
     envIntensity: { value: envIntensity, min: 0, max: 2, step: 0.1 },
     envBlur: { value: envBlur, min: 0, max: 1, step: 0.1 },
     envRotation: { value: envRotation, min: -Math.PI, max: Math.PI, step: 0.05 },
@@ -100,12 +110,14 @@ export function SceneDebugController({
     if (pointLight1Ref.current) {
       pointLight1Ref.current.intensity = config.light1Intensity
       pointLight1Ref.current.position.set(config.light1X, config.light1Y, config.light1Z)
+      pointLight1Ref.current.color.set(config.light1Color)
     }
     if (pointLight2Ref.current) {
       pointLight2Ref.current.intensity = config.light2Intensity
       pointLight2Ref.current.position.set(config.light2X, config.light2Y, config.light2Z)
+      pointLight2Ref.current.color.set(config.light2Color)
     }
-  }, [config.ambientIntensity, config.light1Intensity, config.light1X, config.light1Y, config.light1Z, config.light2Intensity, config.light2X, config.light2Y, config.light2Z, ambientLightRef, pointLight1Ref, pointLight2Ref])
+  }, [config.ambientIntensity, config.light1Intensity, config.light1X, config.light1Y, config.light1Z, config.light1Color, config.light2Intensity, config.light2X, config.light2Y, config.light2Z, config.light2Color, ambientLightRef, pointLight1Ref, pointLight2Ref])
 
   // Update environment
 useEffect(() => {
@@ -113,6 +125,12 @@ useEffect(() => {
   setEnvBlur(config.envBlur)
   setEnvRotation(config.envRotation)
 }, [config.envIntensity, config.envBlur, config.envRotation, setEnvIntensity, setEnvBlur, setEnvRotation])
+
+  // Update light colors
+  useEffect(() => {
+    setLight1Color(config.light1Color)
+    setLight2Color(config.light2Color)
+  }, [config.light1Color, config.light2Color, setLight1Color, setLight2Color])
 
   return null
 }
