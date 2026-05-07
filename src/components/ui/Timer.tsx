@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import styles from "./Timer.module.css";
 
 export default function Timer() {
-  const [count, setCount] = useState(30);
+  const [count, setCount] = useState(10);
 
   useEffect(() => {
     if (count <= 0) return;
@@ -15,8 +15,10 @@ export default function Timer() {
   }, [count]);
 
   return (
-    <h1 className={`${styles.timer} ${count <= 5 ? styles.warning : ""}`}>
-      Time left: {count}
-    </h1>
+    <div className={styles.timerContainer}>
+      <h1 className={`${styles.timer} ${count <= 5 ? styles.warning : ""}`}>
+        0 : {count}
+      </h1>
+    </div>
   );
 }

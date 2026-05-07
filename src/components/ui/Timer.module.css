@@ -1,9 +1,41 @@
 .timer {
-  font-size: 2rem;
-  font-weight: bold;
-  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+  color: var(--color-gold-main);
 }
 
 .warning {
-  color: red;
+  color: var(--color-warning);
+  animation: pulse 0.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.timerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 8rem;
+  background-color: var(--color-red-dark);
+  border-radius: 20px;
+  border: 3px solid var(--color-gold-main);
 }
