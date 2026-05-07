@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ApiTest } from "./dev/ApiTest";
+import Timer from "./components/ui/Timer";
 
 import "./App.css";
 
@@ -10,6 +11,7 @@ function App() {
     <>
       <h1>Fantastic elastic panda</h1>
       <ApiTest />
+      <Timer />
     </>
   );
 }
