@@ -60,7 +60,7 @@ export function SceneDebugController({
     cameraZ: { value: cameraZ, min: -20, max: 20, step: 0.1 },
     cameraFov: { value: cameraFov, min: 10, max: 120, step: 1 },
     rotationX: { value: rotationX || 0, min: -Math.PI, max: Math.PI, step: 0.1 },
-    ambientIntensity: { value: 1, min: 0, max: 3, step: 0.1 },
+    ambientIntensity: { value: 3, min: 0, max: 3, step: 0.1 },
     light1Intensity: { value: 1, min: 0, max: 3, step: 0.1 },
     light1X: { value: 10, min: -30, max: 30, step: 0.5 },
     light1Y: { value: 10, min: -30, max: 30, step: 0.5 },

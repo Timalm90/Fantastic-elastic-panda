@@ -45,7 +45,7 @@ export const Model = React.forwardRef<THREE.Group, ModelProps>((props, ref) => {
 
   return (
     <group ref={ref} {...groupProps} dispose={null}>
-      <group rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
+      <group rotation={[Math.PI / 2, 0, 0]} scale={0.01} position={[0, -1.5, 0]}>
         <mesh
           ref={meshRef}
           name="Panda001"
@@ -55,8 +55,8 @@ export const Model = React.forwardRef<THREE.Group, ModelProps>((props, ref) => {
           morphTargetInfluences={nodes.Panda001.morphTargetInfluences}
           position={[0, 62.02, 29.72]}
         >
-          <mesh geometry={nodes.EyeL.geometry} material={materials.Eyes} position={[-32, 13.745, -31.52]} rotation={[Math.PI / 2, 0, 0]} scale={[0.86, 1.29, 0.86]} />
-          <mesh geometry={nodes.EyeR.geometry} material={materials.Eyes} position={[32, 13.745, -31.52]} rotation={[Math.PI / 2, 0, 0]} scale={[0.86, 1.29, 0.86]} />
+          <mesh geometry={nodes.EyeL.geometry} material={materials.Panda} position={[-30, 14, -27]} rotation={[Math.PI / 2, 0, 0]} scale={[0.86, 1.29, 0.86]} />
+          <mesh geometry={nodes.EyeR.geometry} material={materials.Panda} position={[30, 14, -27]} rotation={[Math.PI / 2, 0, 0]} scale={[0.86, 1.29, 0.86]} />
         </mesh>
       </group>
     </group>

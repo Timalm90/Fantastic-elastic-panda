@@ -8,15 +8,15 @@ import type { BlendshapeValues } from './types/blendshape'
 
 export default function App() {
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>({} as BlendshapeValues)
-  const [envIntensity, setEnvIntensity] = useState(0.5)
+  const [envIntensity, setEnvIntensity] = useState(0.3)
   const [envBlur, setEnvBlur] = useState(0)
-  const [envRotation, setEnvRotation] = useState(0)  // single Y-axis value
+  const [envRotation, setEnvRotation] = useState(-3.1)  // single Y-axis value
   const [cameraX, setCameraX] = useState(0)
-  const [cameraY, setCameraY] = useState(0)
-  const [cameraZ, setCameraZ] = useState(8)
-  const [cameraFov, setCameraFov] = useState(20)
-  const [rotationX, setRotationX] = useState(0)
-  const ambientLightRef = useRef(null)
+  const [cameraY, setCameraY] = useState(-2.2)
+  const [cameraZ, setCameraZ] = useState(4.3)
+  const [cameraFov, setCameraFov] = useState(56)
+  const [rotationX, setRotationX] = useState(0.2)
+  const ambientLightRef = useRef(3)
   const pointLight1Ref = useRef(null)
   const pointLight2Ref = useRef(null)
 
@@ -30,9 +30,9 @@ export default function App() {
           dpr={[1, 2]}
         >
           <Suspense fallback={null}>
-            <ambientLight ref={ambientLightRef} intensity={1} />
-            <pointLight ref={pointLight1Ref} position={[10, 10, 5]} intensity={1} />
-            <pointLight ref={pointLight2Ref} position={[-10, -10, -5]} intensity={1} />
+            <ambientLight ref={ambientLightRef} intensity={3} />
+           {/*<pointLight ref={pointLight1Ref} position={[10, 10, 5]} intensity={1} /> */} 
+            {/*<pointLight ref={pointLight2Ref} position={[-10, -10, -5]} intensity={1} /> */} 
             <SceneDebugController 
               ambientLightRef={ambientLightRef}
               pointLight1Ref={pointLight1Ref}
@@ -51,21 +51,21 @@ export default function App() {
               envBlur={envBlur}
               setEnvIntensity={setEnvIntensity}
               setEnvBlur={setEnvBlur}
-              envRotation={envRotation}       // 👈 added
-              setEnvRotation={setEnvRotation} // 👈 added
+              envRotation={envRotation}       
+              setEnvRotation={setEnvRotation} 
             />
             <Model 
               blendshapes={blendshapes} 
               springConfig={{ stiffness: 100, damping: 14, mass: 1 }}
             />
             <Environment 
-              preset="studio" 
+              preset="apartment" 
               blur={envBlur} 
               background 
               resolution={64}  
               environmentIntensity={envIntensity}
-              environmentRotation={[0, envRotation, 0]}  // 👈 fixed
-              backgroundRotation={[0, envRotation, 0]}   // 👈 fixed
+              environmentRotation={[0, envRotation, 0]}  
+              backgroundRotation={[0, envRotation, 0]}   
             />
           </Suspense>
         </Canvas>
