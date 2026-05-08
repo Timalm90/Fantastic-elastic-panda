@@ -55,20 +55,19 @@ export const FaceControls: React.FC<FaceControlsProps> = ({ onBlendshapesChange 
     let offsetY = 0
 
     // Calculate X offset from blendshape values
-    if (zone.x) {
+if (zone.x?.positive) {
       const positiveValue = blendshapes[zone.x.positive] ?? 0
-      const negativeValue = blendshapes[zone.x.negative] ?? 0
+      const negativeValue = zone.x.negative ? blendshapes[zone.x.negative] ?? 0 : 0
       offsetX = (positiveValue - negativeValue) * maxOffsetX
     }
 
     // Calculate Y offset from blendshape values (inverted because screen Y is flipped)
-    if (zone.y) {
-      const positiveValue = blendshapes[zone.y.positive] ?? 0
-      const negativeValue = blendshapes[zone.y.negative] ?? 0
-      const netY = positiveValue - negativeValue
-      // Use separate offsets for positive (up) vs negative (down) movement
-      offsetY = -(netY > 0 ? netY * maxOffsetYPositive : netY * maxOffsetYNegative)
-    }
+   if (zone.y?.positive) {
+  const positiveValue = blendshapes[zone.y.positive] ?? 0
+  const negativeValue = zone.y.negative ? blendshapes[zone.y.negative] ?? 0 : 0
+  const netY = positiveValue - negativeValue
+  offsetY = -(netY > 0 ? netY * maxOffsetYPositive : netY * maxOffsetYNegative)
+}
 
     return {
       ...baseStyle,
