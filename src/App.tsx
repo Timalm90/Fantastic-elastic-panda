@@ -30,7 +30,7 @@ export default function App() {
           style={{ width: '100%', height: '100%' }}
           gl={{ antialias: true }}
           dpr={[1, 2]}
-        >
+  >
           <Suspense fallback={null}>
             <ambientLight ref={ambientLightRef} intensity={3} />
            <pointLight ref={pointLight1Ref} position={[10, 10, 5]} intensity={1} />
@@ -62,7 +62,7 @@ export default function App() {
             />
             <Model 
               blendshapes={blendshapes} 
-              springConfig={{ stiffness: 100, damping: 14, mass: 1 }}
+              springConfig={{ stiffness: 100, damping: 12, mass: 1 }}
               receiveShadow
               castShadow
             />
