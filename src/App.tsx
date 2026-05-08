@@ -18,7 +18,7 @@ export default function App() {
   const [envRotation, setEnvRotation] = useState(-3.1)  // single Y-axis value
   const [cameraX, setCameraX] = useState(0)
   const [cameraY, setCameraY] = useState(-2.2)
-  const [cameraZ, setCameraZ] = useState(4.3)
+  const [cameraZ, setCameraZ] = useState(5.4)
   const [cameraFov, setCameraFov] = useState(56)
   const [rotationX, setRotationX] = useState(0.2)
   const [light1Color, setLight1Color] = useState('#0450d5')
@@ -29,11 +29,11 @@ export default function App() {
 
 
   return (
-    <>
+    <main>
       <h1>Fantastic elastic panda</h1>
       <ApiTest />
       <Timer />
-      <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
+      <div className="scene-wrapper">
         <Canvas
           camera={{ position: [cameraX, cameraY, cameraZ], fov: cameraFov, rotation: [rotationX, 0, 0] }}
           style={{ width: '100%', height: '100%' }}
@@ -45,7 +45,7 @@ export default function App() {
             <ambientLight ref={ambientLightRef} intensity={3} />
            <pointLight ref={pointLight1Ref} position={[10, 10, 5]} intensity={1} />
             <pointLight ref={pointLight2Ref} position={[-10, -10, -5]} intensity={1} />
-            <SceneDebugController 
+            {/* <SceneDebugController 
               ambientLightRef={ambientLightRef}
               pointLight1Ref={pointLight1Ref}
               pointLight2Ref={pointLight2Ref}
@@ -69,7 +69,7 @@ export default function App() {
               setLight1Color={setLight1Color}
               light2Color={light2Color}
               setLight2Color={setLight2Color}
-            />
+            /> */}
             <Model 
               blendshapes={blendshapes} 
               springConfig={{ stiffness: 100, damping: 12, mass: 1 }}
@@ -88,8 +88,10 @@ export default function App() {
           </Suspense>
         </Canvas>
         <FaceControls onBlendshapesChange={setBlendshapes} />
-      </div>
-    </>
+
+        </div>
+      {/* </div> */}
+    </main>
   )
 }
 

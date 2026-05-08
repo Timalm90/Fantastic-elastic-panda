@@ -61,8 +61,8 @@ export function DragZone({ zone, onDrag, onRelease, style }: DragZoneProps) {
       onTouchEnd={onTouchEnd}
       style={{
         position: 'absolute',
-        width: '60px',
-        height: '60px',
+        width: '1%',
+        height: '1%',
         borderRadius: '50%',
         cursor: 'grab',
         touchAction: 'none',   // prevents scroll interfering with drag
