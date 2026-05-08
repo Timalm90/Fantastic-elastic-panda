@@ -1,4 +1,4 @@
-# 🐼 Fantastic Elastic Panda — Project Plan
+#  Fantastic Elastic Panda — Project Plan
 
 > Tivoli School Assignment · 2 people · 3 weeks
 
@@ -291,3 +291,14 @@ if (canFullscreen) {
 
 - **Android / desktop:** Full Fullscreen API support — browser chrome hides completely
 - **iOS Safari:** No Fullscreen API — fall back to `height: 100dvh` layout gracefully
+
+
+
+
+
+Documentation:
+
+r3f: https://r3f.docs.pmnd.rs/getting-started/introduction
+drei: https://drei.docs.pmnd.rs (useGLTF, Environment, OrbitControls, etc.)
+gltfjsx (CLI to auto-generate your model component): https://github.com/pmndrs/gltfjsx
+Three.js (underlying reference for morphTargetInfluences etc.): https://threejs.org/docs
