@@ -16,6 +16,11 @@ export default function Timer() {
 
   return (
     <div className={styles.timerContainer}>
+      <img
+        className={styles.clockIcon}
+        src="/src/assets/icons/clock-icon.svg"
+        alt="Timer"
+      />
       <h1 className={`${styles.timer} ${count <= 5 ? styles.warning : ""}`}>
         0 : {count}
       </h1>
