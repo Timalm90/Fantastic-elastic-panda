@@ -45,7 +45,7 @@ export default function App() {
             <ambientLight ref={ambientLightRef} intensity={3} />
            <pointLight ref={pointLight1Ref} position={[10, 10, 5]} intensity={1} />
             <pointLight ref={pointLight2Ref} position={[-10, -10, -5]} intensity={1} />
-            {/* <SceneDebugController 
+            <SceneDebugController 
               ambientLightRef={ambientLightRef}
               pointLight1Ref={pointLight1Ref}
               pointLight2Ref={pointLight2Ref}
@@ -69,7 +69,7 @@ export default function App() {
               setLight1Color={setLight1Color}
               light2Color={light2Color}
               setLight2Color={setLight2Color}
-            /> */}
+            /> 
             <Model 
               blendshapes={blendshapes} 
               springConfig={{ stiffness: 100, damping: 12, mass: 1 }}
