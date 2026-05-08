@@ -5,7 +5,10 @@ import { Model } from './components/scene/PandaModel'
 import { FaceControls } from './components/controls/FaceControls'
 import { SceneDebugController } from './components/debug/SceneDebugController'
 import type { BlendshapeValues } from './types/blendshape'
+import { ApiTest } from "./dev/ApiTest";
+import Timer from "./components/ui/Timer";
 
+import "./App.css";
 export default function App() {
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>({} as BlendshapeValues)
   const [envIntensity, setEnvIntensity] = useState(0.3)
@@ -21,17 +24,13 @@ export default function App() {
   const ambientLightRef = useRef(null)
   const pointLight1Ref = useRef(null)
   const pointLight2Ref = useRef(null)
-import { useState } from "react";
-import { ApiTest } from "./dev/ApiTest";
-import Timer from "./components/ui/Timer";
 
-import "./App.css";
-
-function App() {
-  const [count, setCount] = useState(0);
 
   return (
     <>
+      <h1>Fantastic elastic panda</h1>
+      <ApiTest />
+      <Timer />
       <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
         <Canvas
           camera={{ position: [cameraX, cameraY, cameraZ], fov: cameraFov, rotation: [rotationX, 0, 0] }}
@@ -86,9 +85,6 @@ function App() {
             />
           </Suspense>
         </Canvas>
-      <h1>Fantastic elastic panda</h1>
-      <ApiTest />
-      <Timer />
         <FaceControls onBlendshapesChange={setBlendshapes} />
       </div>
     </>
@@ -96,6 +92,4 @@ function App() {
 }
 
 
-}
 
-export default App;
