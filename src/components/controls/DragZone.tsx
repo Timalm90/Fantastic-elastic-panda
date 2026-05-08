@@ -40,11 +40,12 @@ export function DragZone({ zone, onDrag, onRelease, style }: DragZoneProps) {
     originRef.current = { x: t.clientX, y: t.clientY }
   }
 
-  function onTouchMove(e: React.TouchEvent) {
-    if (!originRef.current) return
-    const t = e.touches[0]
-    onDrag(zone, t.clientX - originRef.current.x, t.clientY - originRef.current.y)
-  }
+function onTouchMove(e: React.TouchEvent) {
+  e.preventDefault()
+  if (!originRef.current) return
+  const t = e.touches[0]
+  onDrag(zone, t.clientX - originRef.current.x, t.clientY - originRef.current.y)
+}
 
   function onTouchEnd() {
     originRef.current = null
@@ -68,8 +69,8 @@ export function DragZone({ zone, onDrag, onRelease, style }: DragZoneProps) {
         touchAction: 'none',   // prevents scroll interfering with drag
         // Invisible by default — no background, no border
         // Uncomment below to see zones during development:
-        //  background: 'rgba(255,0,0,0.2)',
-        //  border: '1px solid red',
+        //  background: 'rgba(255,0,0,0.1)',
+        //  border: '5px rgba(14, 135, 234, 0.5) solid',
         ...style,
       }}
       aria-label={`Control ${zone.label}`}

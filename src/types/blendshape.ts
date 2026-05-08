@@ -33,11 +33,24 @@ export interface AxisMapping {
 export interface ControlZone {
   id: string
   label: string
-  x?: AxisMapping      // horizontal drag — optional (Nose has no X axis for example)
-  y?: AxisMapping      // vertical drag — optional
-  sensitivity?: number // Multiplier for drag sensitivity (default: 1.0, higher = more sensitive)
-  minValue?: number    // Minimum blendshape value (default: 0)
-  maxValue?: number    // Maximum blendshape value (default: 1)
+
+  x?: {
+    positive: BlendshapeKey | null
+    negative: BlendshapeKey | null
+  }
+
+  y?: {
+    positive: BlendshapeKey | null
+    negative: BlendshapeKey | null
+  }
+
+  minValue?: number
+  maxValue?: number
+  sensitivity?: number
+
+  dragDistanceX?: number
+  dragDistanceY?: number
+
   displayOffsetXPositive?: number
   displayOffsetXNegative?: number
   displayOffsetYPositive?: number

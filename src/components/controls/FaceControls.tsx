@@ -84,7 +84,7 @@ if (zone.x?.positive || zone.x?.negative) {
       width: `${zoneSize}px`,
       height: `${zoneSize}px`,
       transform: `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px))`,
-      transition: 'transform 0.05s ease-out',
+      transition: 'transform 0.0s ease-out',
     }
   }, [blendshapes, wrapperSize])
 
