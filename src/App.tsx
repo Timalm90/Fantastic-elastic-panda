@@ -4,9 +4,11 @@ import { Environment } from '@react-three/drei'
 import { Model } from './components/scene/PandaModel'
 import { FaceControls } from './components/controls/FaceControls'
 import { SceneDebugController } from './components/debug/SceneDebugController'
-import type { BlendshapeValues } from './types/blendshape'
 import { ApiTest } from "./dev/ApiTest";
 import Timer from "./components/ui/Timer";
+
+import type { BlendshapeValues } from './types/blendshape'
+import type { AmbientLight, PointLight } from "three";
 
 import "./App.css";
 export default function App() {
@@ -21,9 +23,9 @@ export default function App() {
   const [rotationX, setRotationX] = useState(0.2)
   const [light1Color, setLight1Color] = useState('#0450d5')
   const [light2Color, setLight2Color] = useState('#ff690f')
-  const ambientLightRef = useRef(null)
-  const pointLight1Ref = useRef(null)
-  const pointLight2Ref = useRef(null)
+  const ambientLightRef = useRef<AmbientLight>(null!)
+  const pointLight1Ref = useRef<PointLight>(null!)
+  const pointLight2Ref = useRef<PointLight>(null!)
 
 
   return (
