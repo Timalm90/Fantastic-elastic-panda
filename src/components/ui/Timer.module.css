@@ -34,8 +34,14 @@
   justify-content: center;
   align-items: center;
   height: auto;
-  width: 8rem;
+  width: 6rem;
   background-color: var(--color-red-dark);
   border-radius: 20px;
   border: 3px solid var(--color-gold-main);
+}
+
+.clockIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
 }
