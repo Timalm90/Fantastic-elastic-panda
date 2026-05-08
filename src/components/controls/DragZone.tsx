@@ -68,8 +68,8 @@ export function DragZone({ zone, onDrag, onRelease, style }: DragZoneProps) {
         touchAction: 'none',   // prevents scroll interfering with drag
         // Invisible by default — no background, no border
         // Uncomment below to see zones during development:
-         background: 'rgba(255,0,0,0.2)',
-         border: '1px solid red',
+        //  background: 'rgba(255,0,0,0.2)',
+        //  border: '1px solid red',
         ...style,
       }}
       aria-label={`Control ${zone.label}`}
