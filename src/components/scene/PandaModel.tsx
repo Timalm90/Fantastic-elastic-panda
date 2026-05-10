@@ -59,8 +59,8 @@ export const Model = React.forwardRef<THREE.Group, ModelProps>((props, ref) => {
           receiveShadow={props.receiveShadow}
           castShadow={props.castShadow}
         >
-          <mesh geometry={nodes.EyeL.geometry} material={materials.Panda} position={[-30, 14, -27]} rotation={[Math.PI / 2, 0, 0]} scale={[0.86, 1.29, 0.86]} />
-          <mesh geometry={nodes.EyeR.geometry} material={materials.Panda} position={[30, 14, -27]} rotation={[Math.PI / 2, 0, 0]} scale={[0.86, 1.29, 0.86]} />
+          <mesh geometry={nodes.EyeL.geometry} material={materials.Panda} position={[-32, 13.7448, -24.33]} rotation={[Math.PI / 2, 0, 0]} scale={[1, 1, 1]} />
+          <mesh geometry={nodes.EyeR.geometry} material={materials.Panda} position={[32, 13.7448, -24.33]} rotation={[Math.PI / 2, 0, 0]} scale={[1, 1, 1]} />
         </mesh>
       </group>
     </group>
