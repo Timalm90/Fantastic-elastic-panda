@@ -13,9 +13,9 @@ import type { AmbientLight, PointLight } from "three";
 import "./App.css";
 export default function App() {
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>({} as BlendshapeValues)
-  const [envIntensity, setEnvIntensity] = useState(0.3)
-  const [envBlur, setEnvBlur] = useState(0)
-  const [envRotation, setEnvRotation] = useState(-3.1)  // single Y-axis value
+  const [envIntensity, setEnvIntensity] = useState(0.1)
+  const [envBlur, setEnvBlur] = useState(0.7)
+  const [envRotation, setEnvRotation] = useState(-2.5)  // single Y-axis value
   const [cameraX, setCameraX] = useState(0)
   const [cameraY, setCameraY] = useState(-2.2)
   const [cameraZ, setCameraZ] = useState(5.4)
@@ -77,7 +77,7 @@ export default function App() {
               castShadow
             />
             <Environment 
-              preset="studio"
+              preset="apartment"
               blur={envBlur} 
               background 
               resolution={64}  
