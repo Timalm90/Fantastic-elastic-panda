@@ -13,8 +13,8 @@ import type { AmbientLight, PointLight } from "three";
 import "./App.css";
 export default function App() {
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>({} as BlendshapeValues)
-  const [envIntensity, setEnvIntensity] = useState(0.3)
-  const [envBlur, setEnvBlur] = useState(0)
+  const [envIntensity, setEnvIntensity] = useState(0.1)
+  const [envBlur, setEnvBlur] = useState(0.7)
   const [envRotation, setEnvRotation] = useState(-3.1)  // single Y-axis value
   const [cameraX, setCameraX] = useState(0)
   const [cameraY, setCameraY] = useState(-2.2)
@@ -22,11 +22,12 @@ export default function App() {
   const [cameraFov, setCameraFov] = useState(56)
   const [rotationX, setRotationX] = useState(0.2)
   const [light1Color, setLight1Color] = useState('#0450d5')
-  const [light2Color, setLight2Color] = useState('#ff690f')
+  const [light2Color, setLight2Color] = useState('#d63404')
+  const [light3Color, setLight3Color] = useState('#ffbd8f')
   const ambientLightRef = useRef<AmbientLight>(null!)
   const pointLight1Ref = useRef<PointLight>(null!)
   const pointLight2Ref = useRef<PointLight>(null!)
-
+  const pointLight3Ref = useRef<PointLight>(null!)
 
   return (
     <main>
@@ -43,12 +44,14 @@ export default function App() {
     
           <Suspense fallback={null}>
             <ambientLight ref={ambientLightRef} intensity={3} />
-           <pointLight ref={pointLight1Ref} position={[10, 10, 5]} intensity={1} />
-            <pointLight ref={pointLight2Ref} position={[-10, -10, -5]} intensity={1} />
+           <pointLight ref={pointLight1Ref} position={[0, 4, -4.5]} intensity={308} />
+            <pointLight ref={pointLight2Ref} position={[0, -6.5, -8.5]} intensity={378} />
+            <pointLight ref={pointLight3Ref} position={[0, 7, 11]} intensity={484} />
             <SceneDebugController 
               ambientLightRef={ambientLightRef}
               pointLight1Ref={pointLight1Ref}
               pointLight2Ref={pointLight2Ref}
+              pointLight3Ref={pointLight3Ref}
               cameraX={cameraX}
               cameraY={cameraY}
               cameraZ={cameraZ}
@@ -69,6 +72,8 @@ export default function App() {
               setLight1Color={setLight1Color}
               light2Color={light2Color}
               setLight2Color={setLight2Color}
+              light3Color={light3Color}
+              setLight3Color={setLight3Color}
             /> 
             <Model 
               blendshapes={blendshapes} 
@@ -77,7 +82,7 @@ export default function App() {
               castShadow
             />
             <Environment 
-              preset="studio"
+              preset="apartment"
               blur={envBlur} 
               background 
               resolution={64}  
