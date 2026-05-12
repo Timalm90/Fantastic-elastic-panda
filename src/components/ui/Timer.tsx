@@ -10,21 +10,20 @@ type TimerProps = {
 export default function Timer({ duration, isRunning, onComplete }: TimerProps) {
   const [count, setCount] = useState(duration);
 
-  // Reset when duration changes
   useEffect(() => {
     setCount(duration);
-  }, [duration]);
+  }, [duration, isRunning]);
 
   useEffect(() => {
     if (!isRunning) return;
 
-    if (count <= 0) {
-      onComplete(); // 🔥 tell game "time is up"
+    if (count === 0) {
+      onComplete();
       return;
     }
 
     const timeoutId = setTimeout(() => {
-      setCount((c) => c - 1);
+      setCount((currentCount) => currentCount - 1);
     }, 1000);
 
     return () => clearTimeout(timeoutId);
@@ -37,6 +36,7 @@ export default function Timer({ duration, isRunning, onComplete }: TimerProps) {
         src="/src/assets/icons/clock-icon.svg"
         alt="Timer"
       />
+
       <h1 className={`${styles.timer} ${count <= 5 ? styles.warning : ""}`}>
         0 : {count}
       </h1>
