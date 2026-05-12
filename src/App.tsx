@@ -1,4 +1,4 @@
-import { useState, Suspense, useRef } from "react";
+import { useState, Suspense, useRef, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import * as THREE from "three";
@@ -14,9 +14,15 @@ import type { BlendshapeValues } from "./types/blendshape";
 import type { AmbientLight, PointLight } from "three";
 import "./App.css";
 import Button from "./components/ui/Button";
+import { useGameStore } from "./store/gameStore";
+import GameResultModal from "./components/ui/GameResultModal";
 import styles from "./App.module.css";
 
 export default function App() {
+  const phase = useGameStore((state) => state.phase);
+  const startGame = useGameStore((state) => state.startGame);
+  const finishGame = useGameStore((state) => state.finishGame);
+
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>(
     {} as BlendshapeValues,
   );
@@ -24,6 +30,16 @@ export default function App() {
     {} as BlendshapeValues,
   );
   const [score, setScore] = useState<number | null>(null);
+
+  // These refs always store the latest values,
+  // but changing them does NOT cause the timer to restart.
+  const blendshapesRef = useRef(blendshapes);
+  const targetRef = useRef(target);
+
+  // Keep refs updated with the newest state values.
+  blendshapesRef.current = blendshapes;
+  targetRef.current = target;
+
   const [envIntensity, _setEnvIntensity] = useState(0.1);
   const [envBlur, _setEnvBlur] = useState(0.7);
   const [envRotation, _setEnvRotation] = useState(-3.1);
@@ -35,7 +51,6 @@ export default function App() {
   const [light1Color, _setLight1Color] = useState("#0450d5");
   const [light2Color, _setLight2Color] = useState("#d63404");
   const [light3Color, _setLight3Color] = useState("#ffbd8f");
-
   const ambientLightRef = useRef<AmbientLight>(null!);
   const pointLight1Ref = useRef<PointLight>(null!);
   const pointLight2Ref = useRef<PointLight>(null!);
@@ -52,26 +67,68 @@ export default function App() {
     setTargetSpinTrigger((value) => value + 1);
   }
 
+  // This function finishes the game.
+  // It uses refs instead of state directly so the timer does not freeze while dragging.
+  const handleGameComplete = useCallback(() => {
+    const finalScore = scoreMatch(targetRef.current, blendshapesRef.current);
+
+    setScore(finalScore);
+    finishGame(finalScore);
+  }, [finishGame]);
+
+  const handlePlayAgain = () => {
+    const newTarget = randomFace();
+
+    setTarget(newTarget);
+    targetRef.current = newTarget;
+
+    setScore(null);
+    startGame();
+  };
+
   return (
     <main>
       <h1>Fantastic elastic panda</h1>
       <ApiTest />
 
-      <Button onClick={() => console.log("clicked")}>Play</Button>
+      <Button
+        onClick={() => {
+          const newTarget = randomFace();
+
+          setTarget(newTarget);
+          targetRef.current = newTarget;
+
+          setScore(null);
+          startGame();
+        }}
+      >
+        Play
+      </Button>
       <Button
         onClick={() => console.log("clicked tutorial")}
         variant="secondary"
       >
         Tutorial
       </Button>
+      <button
+        onClick={() => {
+          const finalScore = scoreMatch(target, blendshapes);
+          setScore(finalScore);
+          finishGame(finalScore);
+        }}
+      >
+        Score
+      </button>
+
       <Timer
         duration={10}
-        isRunning={true} // later: phase === "playing"
-        onComplete={() => {
-          console.log("⏰ Time is up!");
-          // finish game here
-        }}
+        isRunning={phase === "playing"}
+        onComplete={handleGameComplete}
       />
+
+      {phase === "finished" && (
+        <GameResultModal score={score} onPlayAgain={handlePlayAgain} />
+      )}
 
       <div className="scene-wrapper">
         <Canvas
@@ -226,9 +283,7 @@ export default function App() {
           <div style={{ marginTop: 8 }}>Score: {score ?? "-"}</div>
         </div>
 
-        <FaceControls
-          onBlendshapesChange={setBlendshapes}
-        />
+        <FaceControls onBlendshapesChange={setBlendshapes} />
       </div>
       {/* </div> */}
     </main>
