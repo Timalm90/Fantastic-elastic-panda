@@ -4,32 +4,37 @@ export type Animal = "lion" | "dolphin" | "tucan" | "beetlebug" | "snake";
 export type Metal = "silver" | "gold" | "platinum";
 export type Stamp = Animal | `${Metal} ${Animal}`;
 
-export interface User {
-  readonly uuid: UUID;
-  firstname: string;
-  lastname: string;
-  saldo: number;
-  stamps: Stamp[];
-  github?: string;
-  url?: string;
+export interface IdentityUser {
+  id: UUID;
+  name: string;
 }
 
-export interface TransactionRequest {
-  seller: UUID;
-  buyer: UUID;
+export interface IdentityTokenResponse {
+  user: IdentityUser;
+  expires_at: string;
+}
+
+export interface CreateTransactionRequest {
+  identity_token: string;
   amount: number;
+  amusement_uuid: UUID;
 }
 
 export interface TransactionReceipt {
-  readonly uuid: UUID;
-  seller: UUID;
-  buyer: UUID;
-  amount: number;
+  id: UUID;
   stamp: Stamp;
 }
 
-export interface CentralbankApi {
-  getCurrentUser(): Promise<User>;
-  getUser(id: UUID): Promise<User>;
-  createTransaction(request: TransactionRequest): Promise<TransactionReceipt>;
+export interface PayoutRequest {
+  amount: number;
+}
+
+export interface TivoliApi {
+  getIdentity(token: string): Promise<IdentityTokenResponse>;
+
+  createTransaction(
+    request: CreateTransactionRequest,
+  ): Promise<TransactionReceipt>;
+
+  payOut(transactionId: UUID, request: PayoutRequest): Promise<void>;
 }

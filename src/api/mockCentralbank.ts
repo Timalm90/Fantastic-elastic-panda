@@ -1,20 +1,14 @@
 import type {
-  CentralbankApi,
+  IdentityTokenResponse,
   Stamp,
+  TivoliApi,
   TransactionReceipt,
-  TransactionRequest,
-  User,
-} from "./types.ts";
+} from "./types";
 
-const mockUser: User = {
-  uuid: "user-1",
-  firstname: "Rune",
-  lastname: "Runesson",
-  saldo: 100,
-  stamps: [],
+const mockUser = {
+  id: "user-1",
+  name: "Rune Runesson",
 };
-
-const mockGroupId = "group-fantastic-elastic-panda";
 
 function randomStamp(): Stamp {
   const animals = ["lion", "dolphin", "tucan", "beetlebug", "snake"] as const;
@@ -29,44 +23,22 @@ function randomStamp(): Stamp {
   return `${metal} ${animal}`;
 }
 
-export const mockCentralbankApi: CentralbankApi = {
-  async getCurrentUser(): Promise<User> {
-    return structuredClone(mockUser);
-  },
-
-  async getUser(id: string): Promise<User> {
-    if (id !== mockUser.uuid) {
-      throw {
-        message: "User not found",
-        status: 404,
-      };
-    }
-
-    return structuredClone(mockUser);
-  },
-
-  async createTransaction(
-    request: TransactionRequest,
-  ): Promise<TransactionReceipt> {
-    if (request.buyer === mockUser.uuid) {
-      mockUser.saldo -= request.amount;
-    }
-
-    if (request.seller === mockUser.uuid) {
-      mockUser.saldo += request.amount;
-    }
-
-    const stamp = randomStamp();
-    mockUser.stamps.push(stamp);
-
+export const mockTivoliApi: TivoliApi = {
+  async getIdentity(token: string): Promise<IdentityTokenResponse> {
     return {
-      uuid: crypto.randomUUID(),
-      seller: request.seller,
-      buyer: request.buyer,
-      amount: request.amount,
-      stamp,
+      user: mockUser,
+      expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
     };
   },
-};
 
-export { mockGroupId };
+  async createTransaction(): Promise<TransactionReceipt> {
+    return {
+      id: crypto.randomUUID(),
+      stamp: randomStamp(),
+    };
+  },
+
+  async payOut(): Promise<void> {
+    return;
+  },
+};

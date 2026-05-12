@@ -1,9 +1,7 @@
-import { centralbankApi } from "./centralbank";
-import { mockCentralbankApi } from "./mockCentralbank";
-import type { CentralbankApi } from "./types";
+import { tivoliApi } from "./centralbank";
+import { mockTivoliApi } from "./mockCentralbank";
+import type { TivoliApi } from "./types";
 
 const useMockApi = import.meta.env.VITE_USE_MOCK_API === "true";
 
-export const api: CentralbankApi = useMockApi
-  ? mockCentralbankApi
-  : centralbankApi;
+export const api: TivoliApi = useMockApi ? mockTivoliApi : tivoliApi;

@@ -1,47 +1,65 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
-import type { User } from "../api/types";
+import { getIdentityTokenFromUrl } from "../utils/identityToken";
+import type { IdentityUser } from "../api/types";
 
 export function ApiTest() {
-  const [user, setUser] = useState<User | null>(null);
+  const [player, setPlayer] = useState<IdentityUser | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [stamp, setStamp] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load(): Promise<void> {
-      const u = await api.getCurrentUser();
-      setUser(u);
+      const t = getIdentityTokenFromUrl();
+
+      if (!t) {
+        setError("No token found. Open via Tivoli.");
+        return;
+      }
+
+      setToken(t);
+
+      try {
+        const identity = await api.getIdentity(t);
+        setPlayer(identity.user);
+      } catch {
+        setError("Token expired. Go back to Tivoli.");
+      }
     }
 
     void load();
   }, []);
 
   async function handlePay(): Promise<void> {
-    const receipt = await api.createTransaction({
-      buyer: "user-1",
-      seller: "group-fantastic-elastic-panda",
-      amount: 5,
-    });
+    if (!token) return;
 
-    console.log("Stamp:", receipt.stamp);
+    try {
+      const receipt = await api.createTransaction({
+        identity_token: token,
+        amount: 5,
+        amusement_uuid: import.meta.env.VITE_AMUSEMENT_UUID,
+      });
 
-    const updated = await api.getCurrentUser();
-    setUser(updated);
+      setStamp(receipt.stamp);
+      console.log("Transaction ID:", receipt.id);
+    } catch {
+      setError("Transaction failed. Try again from Tivoli.");
+    }
   }
 
-  if (!user) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+  if (!player) return <p>Loading...</p>;
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>API Test</h1>
+      <h1>API Test (New)</h1>
 
-      <p>
-        {user.firstname} {user.lastname}
-      </p>
-
-      <p>Balance: €{user.saldo}</p>
-
-      <p>Stamps: {user.stamps.join(", ") || "None"}</p>
+      <p>Welcome {player.name}</p>
 
       <button onClick={handlePay}>Pay €5</button>
+
+      {stamp && <p>Stamp received: {stamp}</p>}
     </div>
   );
 }
