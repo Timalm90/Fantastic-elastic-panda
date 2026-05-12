@@ -14,6 +14,7 @@ import type { AmbientLight, PointLight } from "three";
 import "./App.css";
 import Button from "./components/ui/Button";
 import { useGameStore } from "./store/gameStore";
+import GameResultModal from "./components/ui/GameResultModal";
 
 export default function App() {
   const phase = useGameStore((state) => state.phase);
@@ -62,6 +63,16 @@ export default function App() {
     finishGame(finalScore);
   }, [finishGame]);
 
+  const handlePlayAgain = () => {
+    const newTarget = randomFace();
+
+    setTarget(newTarget);
+    targetRef.current = newTarget;
+
+    setScore(null);
+    startGame();
+  };
+
   return (
     <main>
       <h1>Fantastic elastic panda</h1>
@@ -101,6 +112,10 @@ export default function App() {
         isRunning={phase === "playing"}
         onComplete={handleGameComplete}
       />
+
+      {phase === "finished" && (
+        <GameResultModal score={score} onPlayAgain={handlePlayAgain} />
+      )}
 
       <div className="scene-wrapper">
         <Canvas
