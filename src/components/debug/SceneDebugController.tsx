@@ -7,6 +7,7 @@ interface Props {
   ambientLightRef: React.RefObject<THREE.AmbientLight>
   pointLight1Ref: React.RefObject<THREE.PointLight>
   pointLight2Ref: React.RefObject<THREE.PointLight>
+  pointLight3Ref: React.RefObject<THREE.PointLight>
   cameraX: number
   cameraY: number
   cameraZ: number
@@ -27,6 +28,8 @@ interface Props {
   setLight1Color: (value: string) => void
   light2Color: string
   setLight2Color: (value: string) => void
+  light3Color?: string
+  setLight3Color: (value: string) => void
 }
 
 /**
@@ -39,6 +42,7 @@ export function SceneDebugController({
   ambientLightRef, 
   pointLight1Ref, 
   pointLight2Ref,
+  pointLight3Ref,
   cameraX,
   cameraY,
   cameraZ,
@@ -59,6 +63,8 @@ export function SceneDebugController({
   setLight1Color,
   light2Color,
   setLight2Color,
+  light3Color,
+  setLight3Color,
 }: Props) {
   const { camera } = useThree()
 
@@ -69,16 +75,21 @@ export function SceneDebugController({
     cameraFov: { value: cameraFov, min: 10, max: 120, step: 1 },
     rotationX: { value: rotationX || 0, min: -Math.PI, max: Math.PI, step: 0.1 },
     ambientIntensity: { value: 3, min: 0, max: 3, step: 0.1 },
-    light1Intensity: { value: 500, min: 0, max: 500, step: 1 },
-    light1X: { value: 25.5, min: -30, max: 30, step: 0.5 },
-    light1Y: { value: 5.5, min: -30, max: 30, step: 0.5 },
-    light1Z: { value: 12.5, min: -30, max: 30, step: 0.5 },
+    light1Intensity: { value: 308, min: 0, max: 500, step: 1 },
+    light1X: { value: 0, min: -30, max: 30, step: 0.5 },
+    light1Y: { value: 4, min: -30, max: 30, step: 0.5 },
+    light1Z: { value: -4.5, min: -30, max: 30, step: 0.5 },
     light1Color: light1Color,
-    light2Intensity: { value: 173, min: 0, max: 500, step: 1 },
-    light2X: { value: -6.5, min: -30, max: 30, step: 0.5 },
-    light2Y: { value: 0.5, min: -30, max: 30, step: 0.5 },
-    light2Z: { value: 4.5, min: -30, max: 30, step: 0.5 },
+    light2Intensity: { value: 378, min: 0, max: 500, step: 1 },
+    light2X: { value: 0, min: -30, max: 30, step: 0.5 },
+    light2Y: { value: -6.5, min: -30, max: 30, step: 0.5 },
+    light2Z: { value: -8.5, min: -30, max: 30, step: 0.5 },
     light2Color: light2Color,
+    light3Intensity: { value: 484, min: 0, max: 500, step: 1 },
+    light3X: { value: 0, min: -30, max: 30, step: 0.5 },
+    light3Y: { value: 7, min: -30, max: 30, step: 0.5 },
+    light3Z: { value: 11, min: -30, max: 30, step: 0.5 },
+    light3Color: light3Color,
     envIntensity: { value: envIntensity, min: 0, max: 2, step: 0.1 },
     envBlur: { value: envBlur, min: 0, max: 1, step: 0.1 },
     envRotation: { value: envRotation, min: -Math.PI, max: Math.PI, step: 0.05 },
@@ -117,7 +128,12 @@ export function SceneDebugController({
       pointLight2Ref.current.position.set(config.light2X, config.light2Y, config.light2Z)
       pointLight2Ref.current.color.set(config.light2Color)
     }
-  }, [config.ambientIntensity, config.light1Intensity, config.light1X, config.light1Y, config.light1Z, config.light1Color, config.light2Intensity, config.light2X, config.light2Y, config.light2Z, config.light2Color, ambientLightRef, pointLight1Ref, pointLight2Ref])
+    if (pointLight3Ref.current) {
+      pointLight3Ref.current.intensity = config.light3Intensity
+      pointLight3Ref.current.position.set(config.light3X, config.light3Y, config.light3Z)
+      pointLight3Ref.current.color.set(config.light3Color)
+    }
+  }, [config.ambientIntensity, config.light1Intensity, config.light1X, config.light1Y, config.light1Z, config.light1Color, config.light2Intensity, config.light2X, config.light2Y, config.light2Z, config.light2Color, ambientLightRef, pointLight1Ref, pointLight2Ref , pointLight3Ref, config.light3Intensity, config.light3X, config.light3Y, config.light3Z, config.light3Color])
 
   // Update environment
 useEffect(() => {
@@ -130,7 +146,8 @@ useEffect(() => {
   useEffect(() => {
     setLight1Color(config.light1Color)
     setLight2Color(config.light2Color)
-  }, [config.light1Color, config.light2Color, setLight1Color, setLight2Color])
+    setLight3Color(config.light3Color)
+  }, [config.light1Color, config.light2Color, config.light3Color, setLight1Color, setLight2Color, setLight3Color])
 
   return null
 }
