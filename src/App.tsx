@@ -1,6 +1,7 @@
 import { useState, Suspense, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
+import * as THREE from "three";
 import { PlayerPanda } from "./components/scene/PlayerPanda";
 import { TargetPanda } from "./components/scene/TargetPanda";
 import { FaceControls } from "./components/controls/FaceControls";
@@ -13,6 +14,7 @@ import type { BlendshapeValues } from "./types/blendshape";
 import type { AmbientLight, PointLight } from "three";
 import "./App.css";
 import Button from "./components/ui/Button";
+import styles from "./App.module.css";
 
 export default function App() {
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>(
@@ -22,21 +24,33 @@ export default function App() {
     {} as BlendshapeValues,
   );
   const [score, setScore] = useState<number | null>(null);
-const [envIntensity, _setEnvIntensity] = useState(0.1)
-const [envBlur, _setEnvBlur] = useState(0.7)
-const [envRotation, _setEnvRotation] = useState(-3.1)
-const [cameraX, _setCameraX] = useState(0)
-const [cameraY, _setCameraY] = useState(-2.2)
-const [cameraZ, _setCameraZ] = useState(5.4)
-const [cameraFov, _setCameraFov] = useState(56)
-const [rotationX, _setRotationX] = useState(0.2)
-const [light1Color, _setLight1Color] = useState('#0450d5')
-const [light2Color, _setLight2Color] = useState('#d63404')
-const [light3Color, _setLight3Color] = useState('#ffbd8f')
+  const [envIntensity, _setEnvIntensity] = useState(0.1);
+  const [envBlur, _setEnvBlur] = useState(0.7);
+  const [envRotation, _setEnvRotation] = useState(-3.1);
+  const [cameraX, _setCameraX] = useState(0);
+  const [cameraY, _setCameraY] = useState(-2.2);
+  const [cameraZ, _setCameraZ] = useState(5.4);
+  const [cameraFov, _setCameraFov] = useState(56);
+  const [rotationX, _setRotationX] = useState(0.2);
+  const [light1Color, _setLight1Color] = useState("#0450d5");
+  const [light2Color, _setLight2Color] = useState("#d63404");
+  const [light3Color, _setLight3Color] = useState("#ffbd8f");
+
   const ambientLightRef = useRef<AmbientLight>(null!);
   const pointLight1Ref = useRef<PointLight>(null!);
   const pointLight2Ref = useRef<PointLight>(null!);
   const pointLight3Ref = useRef<PointLight>(null!);
+
+  // Animation state
+  const [targetSpinTrigger, setTargetSpinTrigger] = useState(0);
+
+  const TARGET_SPIN_START_DEGREES = -720;
+  const TARGET_SPIN_DURATION_MS = 1200;
+
+  function handleNewTarget() {
+    setScore(null);
+    setTargetSpinTrigger((value) => value + 1);
+  }
 
   return (
     <main>
@@ -134,27 +148,25 @@ const [light3Color, _setLight3Color] = useState('#ffbd8f')
           </Suspense>
         </Canvas>
 
-        <div
-          style={{
-            position: "absolute",
-            top: 20,
-            right: 20,
-            width: 250,
-            height: 250,
-            border: "3px solid #fff",
-            borderRadius: 8,
-            overflow: "hidden",
-          }}
-        >
+        <div className={styles.targetWindow}>
+          <h1 className={styles.windowText}>TARGET</h1>
           <Canvas
             camera={{
-              position: [cameraX, cameraY, cameraZ * 0.6],
+              position: [cameraX, cameraY, cameraZ * 0.65],
               fov: cameraFov,
               rotation: [rotationX, 0, 0],
             }}
-            style={{ width: "100%", height: "100%" }}
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: 20,
+              overflow: "hidden",
+            }}
             gl={{ antialias: true }}
             dpr={[1, 2]}
+            onCreated={({ scene }) => {
+              scene.background = new THREE.Color("#53518d");
+            }}
           >
             <Suspense fallback={null}>
               <ambientLight intensity={3} />
@@ -164,18 +176,26 @@ const [light3Color, _setLight3Color] = useState('#ffbd8f')
                 position={[0, 4, -4.5]}
                 intensity={308}
               />
+
               <pointLight
                 color={light2Color}
                 position={[0, -6.5, -8.5]}
                 intensity={378}
               />
+
               <pointLight
                 color={light3Color}
                 position={[0, 7, 11]}
                 intensity={484}
               />
 
-              <TargetPanda values={target} />
+              <TargetPanda
+                values={target}
+                spinTrigger={targetSpinTrigger}
+                spinStartDegrees={TARGET_SPIN_START_DEGREES}
+                spinDurationMs={TARGET_SPIN_DURATION_MS}
+                onSpinCovered={() => setTarget(randomFace())}
+              />
 
               <Environment
                 preset="apartment"
@@ -199,7 +219,7 @@ const [light3Color, _setLight3Color] = useState('#ffbd8f')
             zIndex: 10,
           }}
         >
-          <button onClick={() => setTarget(randomFace())}>New Target</button>
+          <button onClick={handleNewTarget}>New Target</button>
           <button onClick={() => setScore(scoreMatch(target, blendshapes))}>
             Score
           </button>
