@@ -15,7 +15,7 @@ import './App.css'
 
 export default function App() {
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>({} as BlendshapeValues)
-  const [target, setTarget] = useState<BlendshapeValues>(randomFace())
+  const [target, setTarget] = useState<BlendshapeValues>({} as BlendshapeValues)
   const [score, setScore] = useState<number | null>(null)
   const [envIntensity, setEnvIntensity] = useState(0.1)
   const [envBlur, setEnvBlur] = useState(0.7)
