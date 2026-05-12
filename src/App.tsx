@@ -10,6 +10,7 @@ import type { IdentityUser } from "./api/types";
 import Timer from "./components/ui/Timer";
 import type { BlendshapeValues } from "./types/blendshape";
 import type { AmbientLight, PointLight } from "three";
+import Button from "./components/ui/Button";
 
 import "./App.css";
 export default function App() {
@@ -76,6 +77,14 @@ export default function App() {
 
       {apiError && <p>{apiError}</p>}
       {player && <p>Welcome, {player.name}!</p>}
+
+      <Button onClick={() => console.log("clicked")}>Play</Button>
+      <Button
+        onClick={() => console.log("clicked tutorial")}
+        variant="secondary"
+      >
+        Tutorial
+      </Button>
       <Timer
         duration={10}
         isRunning={true} // later: phase === "playing"
