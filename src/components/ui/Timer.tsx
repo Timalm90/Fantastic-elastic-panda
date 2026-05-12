@@ -1,18 +1,34 @@
 import { useState, useEffect } from "react";
 import styles from "./Timer.module.css";
 
-export default function Timer() {
-  const [count, setCount] = useState(10);
+type TimerProps = {
+  duration: number;
+  isRunning: boolean;
+  onComplete: () => void;
+};
+
+export default function Timer({ duration, isRunning, onComplete }: TimerProps) {
+  const [count, setCount] = useState(duration);
+
+  // Reset when duration changes
+  useEffect(() => {
+    setCount(duration);
+  }, [duration]);
 
   useEffect(() => {
-    if (count <= 0) return;
+    if (!isRunning) return;
+
+    if (count <= 0) {
+      onComplete(); // 🔥 tell game "time is up"
+      return;
+    }
 
     const timeoutId = setTimeout(() => {
-      setCount((count) => count - 1);
+      setCount((c) => c - 1);
     }, 1000);
 
     return () => clearTimeout(timeoutId);
-  }, [count]);
+  }, [count, isRunning, onComplete]);
 
   return (
     <div className={styles.timerContainer}>

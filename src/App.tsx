@@ -76,7 +76,14 @@ export default function App() {
 
       {apiError && <p>{apiError}</p>}
       {player && <p>Welcome, {player.name}!</p>}
-      <Timer />
+      <Timer
+        duration={10}
+        isRunning={true} // later: phase === "playing"
+        onComplete={() => {
+          console.log("⏰ Time is up!");
+          // finish game here
+        }}
+      />
       <div className="scene-wrapper">
         <Canvas
           camera={{
