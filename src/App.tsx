@@ -4,7 +4,7 @@ import { Environment } from '@react-three/drei'
 import { PlayerPanda } from './components/scene/PlayerPanda'
 import { TargetPanda } from './components/scene/TargetPanda'
 import { FaceControls } from './components/controls/FaceControls'
-import { SceneDebugController } from './components/debug/SceneDebugController'
+// import { SceneDebugController } from './components/debug/SceneDebugController'
 import { ApiTest } from "./dev/ApiTest";
 import Timer from "./components/ui/Timer";
 import { randomFace, scoreMatch } from './utils/faceUtils'
@@ -48,10 +48,10 @@ export default function App() {
         >
           <Suspense fallback={null}>
             <ambientLight ref={ambientLightRef} intensity={3} />
-           <pointLight ref={pointLight1Ref} position={[0, 4, -4.5]} intensity={308} />
-            <pointLight ref={pointLight2Ref} position={[0, -6.5, -8.5]} intensity={378} />
-            <pointLight ref={pointLight3Ref} position={[0, 7, 11]} intensity={484} />
-            <SceneDebugController 
+            <pointLight ref={pointLight1Ref} color={light1Color} position={[0, 4, -4.5]} intensity={308} />
+            <pointLight ref={pointLight2Ref} color={light2Color} position={[0, -6.5, -8.5]} intensity={378} />
+            <pointLight ref={pointLight3Ref} color={light3Color} position={[0, 7, 11]} intensity={484} />
+            {/* <SceneDebugController
               ambientLightRef={ambientLightRef}
               pointLight1Ref={pointLight1Ref}
               pointLight2Ref={pointLight2Ref}
@@ -78,7 +78,7 @@ export default function App() {
               setLight2Color={setLight2Color}
               light3Color={light3Color}
               setLight3Color={setLight3Color}
-            /> 
+            /> */}
             <PlayerPanda 
               values={blendshapes} 
               springConfig={{ stiffness: 100, damping: 12, mass: 1 }}
