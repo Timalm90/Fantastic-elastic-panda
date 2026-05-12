@@ -7,14 +7,16 @@ import { FaceControls } from './components/controls/FaceControls'
 import { SceneDebugController } from './components/debug/SceneDebugController'
 import { ApiTest } from "./dev/ApiTest";
 import Timer from "./components/ui/Timer";
-import { randomFace } from './utils/faceUtils'
+import { randomFace, scoreMatch } from './utils/faceUtils'
 
 import type { BlendshapeValues } from './types/blendshape'
 import type { AmbientLight, PointLight } from "three";
+import './App.css'
 
 export default function App() {
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>({} as BlendshapeValues)
-  const [target] = useState<BlendshapeValues>(randomFace())
+  const [target, setTarget] = useState<BlendshapeValues>(randomFace())
+  const [score, setScore] = useState<number | null>(null)
   const [envIntensity, setEnvIntensity] = useState(0.1)
   const [envBlur, setEnvBlur] = useState(0.7)
   const [envRotation, setEnvRotation] = useState(-3.1)  // single Y-axis value
@@ -135,6 +137,20 @@ export default function App() {
               />
             </Suspense>
           </Canvas>
+        </div>
+
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 20,
+            left: 20,
+            color: '#fff',
+            zIndex: 10,
+          }}
+        >
+          <button onClick={() => setTarget(randomFace())}>New Target</button>
+          <button onClick={() => setScore(scoreMatch(target, blendshapes))}>Score</button>
+          <div style={{ marginTop: 8 }}>Score: {score ?? '-'}</div>
         </div>
 
         <FaceControls blendshapes={blendshapes} onBlendshapesChange={setBlendshapes} />
