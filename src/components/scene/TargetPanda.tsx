@@ -25,15 +25,9 @@ interface TargetPandaProps {
   values?: Record<string, number>
   receiveShadow?: boolean
   castShadow?: boolean
-
-  // Trigger animation by increasing this value
   spinTrigger?: number
-
-  // Easy tuning
   spinStartDegrees?: number
   spinDurationMs?: number
-
-  // Called while panda is spinning fast
   onSpinCovered?: () => void
 }
 
@@ -48,9 +42,7 @@ export const TargetPanda = React.forwardRef<THREE.Group, TargetPandaProps>(
       ...groupProps
     } = props
 
-    const { nodes, materials } = useGLTF(
-      '/panda.glb'
-    ) as unknown as GLTFResult
+    const { nodes, materials } = useGLTF('/panda.glb') as unknown as GLTFResult
 
     const meshRef = useRef<THREE.Mesh>(null)
     const groupRef = useRef<THREE.Group>(null)
@@ -63,11 +55,8 @@ export const TargetPanda = React.forwardRef<THREE.Group, TargetPandaProps>(
       active: false,
       elapsed: 0,
       coveredCalled: false,
+      rotationBlendshape: 0,
     })
-
-    // -------------------------
-    // Animation Helpers
-    // -------------------------
 
     function easeInOut(t: number) {
       return t < 0.5
@@ -83,43 +72,36 @@ export const TargetPanda = React.forwardRef<THREE.Group, TargetPandaProps>(
       return a + (b - a) * t
     }
 
-    /**
-     * Desired motion:
-     *
-     * -1080
-     * -> slight wrong direction (-1200)
-     * -> rapid spin upward
-     * -> overshoot to 200
-     * -> settle at 0
-     */
-
     function getSpinDegrees(t: number) {
       const dipDegrees = spinStartDegrees - 120
       const overshootDegrees = 50
 
-      // Phase 1:
-      // slight backwards dip
       if (t < 0.14) {
         const p = easeInOut(t / 0.14)
         return lerp(spinStartDegrees, dipDegrees, p)
       }
 
-      // Phase 2:
-      // rapid spin toward overshoot
       if (t < 0.78) {
         const p = easeInOut((t - 0.14) / 0.64)
         return lerp(dipDegrees, overshootDegrees, p)
       }
 
-      // Phase 3:
-      // settle into 0
       const p = easeOut((t - 0.78) / 0.22)
       return lerp(overshootDegrees, 0, p)
     }
 
-    // -------------------------
-    // Start animation
-    // -------------------------
+    function getRotationBlendshape(t: number) {
+      if (t >= 0.14 && t < 0.78) {
+        return easeInOut((t - 0.14) / 0.64)
+      }
+
+      if (t >= 0.78 && t <= 1) {
+        const p = easeOut((t - 0.78) / 0.22)
+        return 1 - p
+      }
+
+      return 0
+    }
 
     useEffect(() => {
       if (!spinTrigger) return
@@ -127,71 +109,50 @@ export const TargetPanda = React.forwardRef<THREE.Group, TargetPandaProps>(
       spinRef.current.active = true
       spinRef.current.elapsed = 0
       spinRef.current.coveredCalled = false
+      spinRef.current.rotationBlendshape = 0
 
       if (groupRef.current) {
-        groupRef.current.rotation.y = THREE.MathUtils.degToRad(
-          spinStartDegrees
-        )
+        groupRef.current.rotation.y = THREE.MathUtils.degToRad(spinStartDegrees)
       }
     }, [spinTrigger, spinStartDegrees])
 
-    // -------------------------
-    // Frame loop
-    // -------------------------
-
     useFrame((_, delta) => {
-      // -------------------------
-      // Spin animation
-      // -------------------------
-
       const spin = spinRef.current
 
       if (spin.active && groupRef.current) {
         spin.elapsed += delta * 1000
 
-        const t = Math.min(
-          spin.elapsed / spinDurationMs,
-          1
-        )
+        const t = Math.min(spin.elapsed / spinDurationMs, 1)
 
         const degrees = getSpinDegrees(t)
+        spin.rotationBlendshape = getRotationBlendshape(t)
 
-        // Rotate ONLY around Y axis
-        groupRef.current.rotation.y =
-          THREE.MathUtils.degToRad(degrees)
+        groupRef.current.rotation.y = THREE.MathUtils.degToRad(degrees)
 
-        // Randomize face while hidden/spinning
         if (!spin.coveredCalled && t > 0.35) {
           spin.coveredCalled = true
           onSpinCovered?.()
         }
 
-        // Finish
         if (t >= 1) {
           spin.active = false
+          spin.rotationBlendshape = 0
           groupRef.current.rotation.y = 0
         }
       }
-
-      // -------------------------
-      // Morph targets
-      // -------------------------
 
       const mesh = meshRef.current
 
       if (!mesh?.morphTargetDictionary) return
 
-      // Initialize morphTargetInfluences if needed
       if (!mesh.morphTargetInfluences) {
         mesh.morphTargetInfluences = new Array(
           mesh.geometry.morphAttributes.position?.length ?? 0
         ).fill(0)
       }
 
-      // Blink animation
       const blinkValue = updateBlink(delta * 1000)
 
-      // Apply constraints
       const constrainedValues = {
         ...values,
       } as BlendshapeValues
@@ -199,9 +160,10 @@ export const TargetPanda = React.forwardRef<THREE.Group, TargetPandaProps>(
       applyConstraints(constrainedValues)
 
       for (const key of MORPH_KEYS) {
+        if (key === 'Rotation') continue
+
         let value = constrainedValues[key] ?? 0
 
-        // Add blink on top
         if (key === 'Blink') {
           value = Math.min(1, value + blinkValue)
         }
@@ -212,14 +174,16 @@ export const TargetPanda = React.forwardRef<THREE.Group, TargetPandaProps>(
           mesh.morphTargetInfluences[idx] = value
         }
       }
+
+      const rotationIdx = mesh.morphTargetDictionary.Rotation
+
+      if (rotationIdx !== undefined) {
+        mesh.morphTargetInfluences[rotationIdx] = spin.rotationBlendshape
+      }
     })
 
     return (
-      <group
-        ref={groupRef}
-        {...groupProps}
-        dispose={null}
-      >
+      <group ref={groupRef} {...groupProps} dispose={null}>
         <group
           rotation={[Math.PI / 2, 0, 0]}
           scale={0.01}
@@ -230,9 +194,8 @@ export const TargetPanda = React.forwardRef<THREE.Group, TargetPandaProps>(
             name="Panda001"
             geometry={nodes.Panda001.geometry}
             material={materials.Panda}
-            morphTargetDictionary={
-              nodes.Panda001.morphTargetDictionary
-            }
+            morphTargetDictionary={nodes.Panda001.morphTargetDictionary}
+            morphTargetInfluences={nodes.Panda001.morphTargetInfluences}
             position={[0, 62.02, 29.72]}
             receiveShadow={props.receiveShadow}
             castShadow={props.castShadow}
