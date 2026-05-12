@@ -1,25 +1,27 @@
-import { useState, Suspense, useRef, useEffect } from "react";
+import { useState, Suspense, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
-import { Model } from "./components/scene/PandaModel";
+import { PlayerPanda } from "./components/scene/PlayerPanda";
+import { TargetPanda } from "./components/scene/TargetPanda";
 import { FaceControls } from "./components/controls/FaceControls";
-import { SceneDebugController } from "./components/debug/SceneDebugController";
-import { api } from "./api";
-import { getIdentityTokenFromUrl } from "./utils/identityToken";
-import type { IdentityUser } from "./api/types";
+// import { SceneDebugController } from './components/debug/SceneDebugController'
+import { ApiTest } from "./dev/ApiTest";
 import Timer from "./components/ui/Timer";
+import { randomFace, scoreMatch } from "./utils/faceUtils";
+
 import type { BlendshapeValues } from "./types/blendshape";
 import type { AmbientLight, PointLight } from "three";
+import "./App.css";
 import Button from "./components/ui/Button";
 
-import "./App.css";
 export default function App() {
-  const [, setIdentityToken] = useState<string | null>(null);
-  const [player, setPlayer] = useState<IdentityUser | null>(null);
-  const [apiError, setApiError] = useState<string | null>(null);
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>(
     {} as BlendshapeValues,
   );
+  const [target, setTarget] = useState<BlendshapeValues>(
+    {} as BlendshapeValues,
+  );
+  const [score, setScore] = useState<number | null>(null);
   const [envIntensity, setEnvIntensity] = useState(0.1);
   const [envBlur, setEnvBlur] = useState(0.7);
   const [envRotation, setEnvRotation] = useState(-3.1); // single Y-axis value
@@ -36,47 +38,10 @@ export default function App() {
   const pointLight2Ref = useRef<PointLight>(null!);
   const pointLight3Ref = useRef<PointLight>(null!);
 
-  useEffect(() => {
-    async function loadIdentity(): Promise<void> {
-      console.log("Starting identity load...");
-
-      const token = getIdentityTokenFromUrl();
-      console.log("Token:", token);
-
-      if (!token) {
-        console.log("No token found");
-        setApiError("No Tivoli token found. Please enter from Tivoli.");
-        return;
-      }
-
-      setIdentityToken(token);
-
-      try {
-        console.log("Calling API...");
-
-        const identity = await api.getIdentity(token);
-
-        console.log("API response:", identity);
-        console.log("User:", identity.user);
-
-        setPlayer(identity.user);
-      } catch (error) {
-        console.log("API error:", error);
-
-        setApiError(
-          "Your Tivoli session has expired. Please go back to Tivoli and try again.",
-        );
-      }
-    }
-
-    void loadIdentity();
-  }, []);
   return (
     <main>
       <h1>Fantastic elastic panda</h1>
-
-      {apiError && <p>{apiError}</p>}
-      {player && <p>Welcome, {player.name}!</p>}
+      <ApiTest />
 
       <Button onClick={() => console.log("clicked")}>Play</Button>
       <Button
@@ -93,6 +58,7 @@ export default function App() {
           // finish game here
         }}
       />
+
       <div className="scene-wrapper">
         <Canvas
           camera={{
@@ -108,20 +74,23 @@ export default function App() {
             <ambientLight ref={ambientLightRef} intensity={3} />
             <pointLight
               ref={pointLight1Ref}
+              color={light1Color}
               position={[0, 4, -4.5]}
               intensity={308}
             />
             <pointLight
               ref={pointLight2Ref}
+              color={light2Color}
               position={[0, -6.5, -8.5]}
               intensity={378}
             />
             <pointLight
               ref={pointLight3Ref}
+              color={light3Color}
               position={[0, 7, 11]}
               intensity={484}
             />
-            <SceneDebugController
+            {/* <SceneDebugController
               ambientLightRef={ambientLightRef}
               pointLight1Ref={pointLight1Ref}
               pointLight2Ref={pointLight2Ref}
@@ -148,12 +117,10 @@ export default function App() {
               setLight2Color={setLight2Color}
               light3Color={light3Color}
               setLight3Color={setLight3Color}
-            />
-            <Model
-              blendshapes={blendshapes}
+            /> */}
+            <PlayerPanda
+              values={blendshapes}
               springConfig={{ stiffness: 100, damping: 12, mass: 1 }}
-              receiveShadow
-              castShadow
             />
             <Environment
               preset="apartment"
@@ -166,7 +133,83 @@ export default function App() {
             />
           </Suspense>
         </Canvas>
-        <FaceControls onBlendshapesChange={setBlendshapes} />
+
+        <div
+          style={{
+            position: "absolute",
+            top: 20,
+            right: 20,
+            width: 250,
+            height: 250,
+            border: "3px solid #fff",
+            borderRadius: 8,
+            overflow: "hidden",
+          }}
+        >
+          <Canvas
+            camera={{
+              position: [cameraX, cameraY, cameraZ * 0.6],
+              fov: cameraFov,
+              rotation: [rotationX, 0, 0],
+            }}
+            style={{ width: "100%", height: "100%" }}
+            gl={{ antialias: true }}
+            dpr={[1, 2]}
+          >
+            <Suspense fallback={null}>
+              <ambientLight intensity={3} />
+
+              <pointLight
+                color={light1Color}
+                position={[0, 4, -4.5]}
+                intensity={308}
+              />
+              <pointLight
+                color={light2Color}
+                position={[0, -6.5, -8.5]}
+                intensity={378}
+              />
+              <pointLight
+                color={light3Color}
+                position={[0, 7, 11]}
+                intensity={484}
+              />
+
+              <TargetPanda values={target} />
+
+              <Environment
+                preset="apartment"
+                blur={envBlur}
+                background
+                resolution={64}
+                environmentIntensity={envIntensity}
+                environmentRotation={[0, envRotation, 0]}
+                backgroundRotation={[0, envRotation, 0]}
+              />
+            </Suspense>
+          </Canvas>
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            bottom: 20,
+            left: 20,
+            color: "#fff",
+            zIndex: 10,
+          }}
+        >
+          <button onClick={() => setTarget(randomFace())}>New Target</button>
+          <button onClick={() => setScore(scoreMatch(target, blendshapes))}>
+            Score
+          </button>
+          <div style={{ marginTop: 8 }}>Score: {score ?? "-"}</div>
+        </div>
+
+        <FaceControls
+          blendshapes={blendshapes}
+          onBlendshapesChange={setBlendshapes}
+        />
       </div>
       {/* </div> */}
     </main>

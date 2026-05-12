@@ -12,8 +12,10 @@ export function ApiTest() {
   useEffect(() => {
     async function load(): Promise<void> {
       const t = getIdentityTokenFromUrl();
+      console.log('[ApiTest] Token from URL:', t);
 
       if (!t) {
+        console.log('[ApiTest] No token found');
         setError("No token found. Open via Tivoli.");
         return;
       }
@@ -21,9 +23,12 @@ export function ApiTest() {
       setToken(t);
 
       try {
+        console.log('[ApiTest] Calling getIdentity...');
         const identity = await api.getIdentity(t);
+        console.log('[ApiTest] Got identity:', identity);
         setPlayer(identity.user);
-      } catch {
+      } catch (err) {
+        console.error('[ApiTest] Error getting identity:', err);
         setError("Token expired. Go back to Tivoli.");
       }
     }
@@ -35,15 +40,17 @@ export function ApiTest() {
     if (!token) return;
 
     try {
+      console.log('[ApiTest] Creating transaction...');
       const receipt = await api.createTransaction({
         identity_token: token,
         amount: 5,
         amusement_uuid: import.meta.env.VITE_AMUSEMENT_UUID,
       });
 
+      console.log('[ApiTest] Transaction created:', receipt);
       setStamp(receipt.stamp);
-      console.log("Transaction ID:", receipt.id);
-    } catch {
+    } catch (err) {
+      console.error('[ApiTest] Transaction failed:', err);
       setError("Transaction failed. Try again from Tivoli.");
     }
   }

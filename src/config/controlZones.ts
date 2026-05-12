@@ -15,8 +15,8 @@ export const CONTROL_ZONES: ControlZone[] = [
     displayOffsetXPositive: 0.3,
 
 
-    dragDistanceX: 50,
-    dragDistanceY: 30,
+    dragDistanceX: 200,
+    dragDistanceY: 200,
 
   },
   {
@@ -32,8 +32,8 @@ export const CONTROL_ZONES: ControlZone[] = [
     displayOffsetXNegative: 0.3,
     displayOffsetXPositive: 0.15,
 
-    dragDistanceX: 50,
-    dragDistanceY: 30,
+    dragDistanceX: 200,
+    dragDistanceY: 200,
   },
   {
     id: 'r_brow',
@@ -46,7 +46,7 @@ export const CONTROL_ZONES: ControlZone[] = [
 
 
     dragDistanceX: 80,
-    dragDistanceY: 50,
+    dragDistanceY: 100,
   },
   {
     id: 'l_brow',
@@ -59,7 +59,7 @@ export const CONTROL_ZONES: ControlZone[] = [
 
 
     dragDistanceX: 80,
-    dragDistanceY: 50,
+    dragDistanceY: 100,
   },
   {
     id: 'r_cheek',
@@ -67,14 +67,15 @@ export const CONTROL_ZONES: ControlZone[] = [
     x: { positive: 'R_Cheek_Right', negative: null },
     y: { positive: 'R_Cheek_Up', negative: 'R_Cheek_Down' },
 
-    maxValue: 0.75,
-
+    
     displayOffsetYPositive: 0.05,
     displayOffsetYNegative: 0.15,
     displayOffsetXPositive: 0.25,
-
-    dragDistanceX: 80,
+    
+    dragDistanceX: 100,
     dragDistanceY: 100,
+
+    maxValue: 0.70,
   },
   {
     id: 'l_cheek',
@@ -82,14 +83,15 @@ export const CONTROL_ZONES: ControlZone[] = [
     x: { positive: null, negative: 'L_Cheek_Left' },
     y: { positive: 'L_Cheek_Up', negative: 'L_Cheek_Down' },
 
-    maxValue: 0.75,
-
+    
     displayOffsetYPositive: 0.05,
     displayOffsetYNegative: 0.15,
     displayOffsetXNegative: 0.25,
-
-    dragDistanceX: 80,
+    
+    dragDistanceX: 100,
     dragDistanceY: 100,
+
+    maxValue: 0.65,
   },
   {
     id: 'nose',
@@ -99,6 +101,10 @@ export const CONTROL_ZONES: ControlZone[] = [
 
     displayOffsetYPositive: 0.04,
     displayOffsetYNegative: 0.04,
+
+    dragDistanceX: 100,
+    dragDistanceY: 50,
+    maxValue: 0.5,
   },
   {
     id: 'mouth',
@@ -111,7 +117,8 @@ export const CONTROL_ZONES: ControlZone[] = [
     displayOffsetXNegative: 0.15,
     displayOffsetXPositive: 0.15,
 
-    dragDistanceX: 50,
+    dragDistanceX: 100,
     dragDistanceY: 200,
+    maxValue: 0.75,
   },
 ]
