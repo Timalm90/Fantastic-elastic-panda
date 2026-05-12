@@ -24,7 +24,7 @@ function randomStamp(): Stamp {
 }
 
 export const mockTivoliApi: TivoliApi = {
-  async getIdentity(token: string): Promise<IdentityTokenResponse> {
+  async getIdentity(_token: string): Promise<IdentityTokenResponse> {
     return {
       user: mockUser,
       expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),

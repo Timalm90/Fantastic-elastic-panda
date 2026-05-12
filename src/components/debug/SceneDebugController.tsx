@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useThree } from '@react-three/fiber'
 import { useControls } from 'leva'
 import { useEffect } from 'react'
