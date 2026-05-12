@@ -1,4 +1,4 @@
-import { useState, Suspense, useRef } from "react";
+import { useState, Suspense, useRef, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { PlayerPanda } from "./components/scene/PlayerPanda";
@@ -19,6 +19,7 @@ export default function App() {
   const phase = useGameStore((state) => state.phase);
   const startGame = useGameStore((state) => state.startGame);
   const finishGame = useGameStore((state) => state.finishGame);
+
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>(
     {} as BlendshapeValues,
   );
@@ -26,6 +27,16 @@ export default function App() {
     {} as BlendshapeValues,
   );
   const [score, setScore] = useState<number | null>(null);
+
+  // These refs always store the latest values,
+  // but changing them does NOT cause the timer to restart.
+  const blendshapesRef = useRef(blendshapes);
+  const targetRef = useRef(target);
+
+  // Keep refs updated with the newest state values.
+  blendshapesRef.current = blendshapes;
+  targetRef.current = target;
+
   const [envIntensity, _setEnvIntensity] = useState(0.1);
   const [envBlur, _setEnvBlur] = useState(0.7);
   const [envRotation, _setEnvRotation] = useState(-3.1);
@@ -42,6 +53,15 @@ export default function App() {
   const pointLight2Ref = useRef<PointLight>(null!);
   const pointLight3Ref = useRef<PointLight>(null!);
 
+  // This function finishes the game.
+  // It uses refs instead of state directly so the timer does not freeze while dragging.
+  const handleGameComplete = useCallback(() => {
+    const finalScore = scoreMatch(targetRef.current, blendshapesRef.current);
+
+    setScore(finalScore);
+    finishGame(finalScore);
+  }, [finishGame]);
+
   return (
     <main>
       <h1>Fantastic elastic panda</h1>
@@ -49,7 +69,11 @@ export default function App() {
 
       <Button
         onClick={() => {
-          setTarget(randomFace());
+          const newTarget = randomFace();
+
+          setTarget(newTarget);
+          targetRef.current = newTarget;
+
           setScore(null);
           startGame();
         }}
@@ -71,14 +95,11 @@ export default function App() {
       >
         Score
       </button>
+
       <Timer
         duration={10}
         isRunning={phase === "playing"}
-        onComplete={() => {
-          const finalScore = scoreMatch(target, blendshapes);
-          setScore(finalScore);
-          finishGame(finalScore);
-        }}
+        onComplete={handleGameComplete}
       />
 
       <div className="scene-wrapper">
