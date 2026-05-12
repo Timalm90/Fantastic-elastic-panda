@@ -17,17 +17,17 @@ export default function App() {
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>({} as BlendshapeValues)
   const [target, setTarget] = useState<BlendshapeValues>({} as BlendshapeValues)
   const [score, setScore] = useState<number | null>(null)
-  const [envIntensity, setEnvIntensity] = useState(0.1)
-  const [envBlur, setEnvBlur] = useState(0.7)
-  const [envRotation, setEnvRotation] = useState(-3.1)  // single Y-axis value
-  const [cameraX, setCameraX] = useState(0)
-  const [cameraY, setCameraY] = useState(-2.2)
-  const [cameraZ, setCameraZ] = useState(5.4)
-  const [cameraFov, setCameraFov] = useState(56)
-  const [rotationX, setRotationX] = useState(0.2)
-  const [light1Color, setLight1Color] = useState('#0450d5')
-  const [light2Color, setLight2Color] = useState('#d63404')
-  const [light3Color, setLight3Color] = useState('#ffbd8f')
+const [envIntensity, _setEnvIntensity] = useState(0.1)
+const [envBlur, _setEnvBlur] = useState(0.7)
+const [envRotation, _setEnvRotation] = useState(-3.1)
+const [cameraX, _setCameraX] = useState(0)
+const [cameraY, _setCameraY] = useState(-2.2)
+const [cameraZ, _setCameraZ] = useState(5.4)
+const [cameraFov, _setCameraFov] = useState(56)
+const [rotationX, _setRotationX] = useState(0.2)
+const [light1Color, _setLight1Color] = useState('#0450d5')
+const [light2Color, _setLight2Color] = useState('#d63404')
+const [light3Color, _setLight3Color] = useState('#ffbd8f')
   const ambientLightRef = useRef<AmbientLight>(null!)
   const pointLight1Ref = useRef<PointLight>(null!)
   const pointLight2Ref = useRef<PointLight>(null!)
@@ -153,7 +153,8 @@ export default function App() {
           <div style={{ marginTop: 8 }}>Score: {score ?? '-'}</div>
         </div>
 
-        <FaceControls blendshapes={blendshapes} onBlendshapesChange={setBlendshapes} />
+<FaceControls onBlendshapesChange={setBlendshapes} />
+
 
         </div>
       {/* </div> */}
