@@ -1,56 +1,95 @@
-import { useState, Suspense, useRef } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { Environment } from '@react-three/drei'
-import { PlayerPanda } from './components/scene/PlayerPanda'
-import { TargetPanda } from './components/scene/TargetPanda'
-import { FaceControls } from './components/controls/FaceControls'
+import { useState, Suspense, useRef } from "react";
+import { Canvas } from "@react-three/fiber";
+import { Environment } from "@react-three/drei";
+import { PlayerPanda } from "./components/scene/PlayerPanda";
+import { TargetPanda } from "./components/scene/TargetPanda";
+import { FaceControls } from "./components/controls/FaceControls";
 // import { SceneDebugController } from './components/debug/SceneDebugController'
 import { ApiTest } from "./dev/ApiTest";
 import Timer from "./components/ui/Timer";
-import { randomFace, scoreMatch } from './utils/faceUtils'
+import { randomFace, scoreMatch } from "./utils/faceUtils";
 
-import type { BlendshapeValues } from './types/blendshape'
+import type { BlendshapeValues } from "./types/blendshape";
 import type { AmbientLight, PointLight } from "three";
-import './App.css'
+import "./App.css";
+import Button from "./components/ui/Button";
 
 export default function App() {
-  const [blendshapes, setBlendshapes] = useState<BlendshapeValues>({} as BlendshapeValues)
-  const [target, setTarget] = useState<BlendshapeValues>({} as BlendshapeValues)
-  const [score, setScore] = useState<number | null>(null)
-  const [envIntensity, setEnvIntensity] = useState(0.1)
-  const [envBlur, setEnvBlur] = useState(0.7)
-  const [envRotation, setEnvRotation] = useState(-3.1)  // single Y-axis value
-  const [cameraX, setCameraX] = useState(0)
-  const [cameraY, setCameraY] = useState(-2.2)
-  const [cameraZ, setCameraZ] = useState(5.4)
-  const [cameraFov, setCameraFov] = useState(56)
-  const [rotationX, setRotationX] = useState(0.2)
-  const [light1Color, setLight1Color] = useState('#0450d5')
-  const [light2Color, setLight2Color] = useState('#d63404')
-  const [light3Color, setLight3Color] = useState('#ffbd8f')
-  const ambientLightRef = useRef<AmbientLight>(null!)
-  const pointLight1Ref = useRef<PointLight>(null!)
-  const pointLight2Ref = useRef<PointLight>(null!)
-  const pointLight3Ref = useRef<PointLight>(null!)
+  const [blendshapes, setBlendshapes] = useState<BlendshapeValues>(
+    {} as BlendshapeValues,
+  );
+  const [target, setTarget] = useState<BlendshapeValues>(
+    {} as BlendshapeValues,
+  );
+  const [score, setScore] = useState<number | null>(null);
+  const [envIntensity, setEnvIntensity] = useState(0.1);
+  const [envBlur, setEnvBlur] = useState(0.7);
+  const [envRotation, setEnvRotation] = useState(-3.1); // single Y-axis value
+  const [cameraX, setCameraX] = useState(0);
+  const [cameraY, setCameraY] = useState(-2.2);
+  const [cameraZ, setCameraZ] = useState(5.4);
+  const [cameraFov, setCameraFov] = useState(56);
+  const [rotationX, setRotationX] = useState(0.2);
+  const [light1Color, setLight1Color] = useState("#0450d5");
+  const [light2Color, setLight2Color] = useState("#d63404");
+  const [light3Color, setLight3Color] = useState("#ffbd8f");
+  const ambientLightRef = useRef<AmbientLight>(null!);
+  const pointLight1Ref = useRef<PointLight>(null!);
+  const pointLight2Ref = useRef<PointLight>(null!);
+  const pointLight3Ref = useRef<PointLight>(null!);
 
   return (
     <main>
       <h1>Fantastic elastic panda</h1>
       <ApiTest />
-      <Timer />
+
+      <Button onClick={() => console.log("clicked")}>Play</Button>
+      <Button
+        onClick={() => console.log("clicked tutorial")}
+        variant="secondary"
+      >
+        Tutorial
+      </Button>
+      <Timer
+        duration={10}
+        isRunning={true} // later: phase === "playing"
+        onComplete={() => {
+          console.log("⏰ Time is up!");
+          // finish game here
+        }}
+      />
 
       <div className="scene-wrapper">
         <Canvas
-          camera={{ position: [cameraX, cameraY, cameraZ], fov: cameraFov, rotation: [rotationX, 0, 0] }}
-          style={{ width: '100%', height: '100%' }}
+          camera={{
+            position: [cameraX, cameraY, cameraZ],
+            fov: cameraFov,
+            rotation: [rotationX, 0, 0],
+          }}
+          style={{ width: "100%", height: "100%" }}
           gl={{ antialias: true }}
           dpr={[1, 2]}
         >
           <Suspense fallback={null}>
             <ambientLight ref={ambientLightRef} intensity={3} />
-            <pointLight ref={pointLight1Ref} color={light1Color} position={[0, 4, -4.5]} intensity={308} />
-            <pointLight ref={pointLight2Ref} color={light2Color} position={[0, -6.5, -8.5]} intensity={378} />
-            <pointLight ref={pointLight3Ref} color={light3Color} position={[0, 7, 11]} intensity={484} />
+            <pointLight
+              ref={pointLight1Ref}
+              color={light1Color}
+              position={[0, 4, -4.5]}
+              intensity={308}
+            />
+            <pointLight
+              ref={pointLight2Ref}
+              color={light2Color}
+              position={[0, -6.5, -8.5]}
+              intensity={378}
+            />
+            <pointLight
+              ref={pointLight3Ref}
+              color={light3Color}
+              position={[0, 7, 11]}
+              intensity={484}
+            />
             {/* <SceneDebugController
               ambientLightRef={ambientLightRef}
               pointLight1Ref={pointLight1Ref}
@@ -79,11 +118,11 @@ export default function App() {
               light3Color={light3Color}
               setLight3Color={setLight3Color}
             /> */}
-            <PlayerPanda 
-              values={blendshapes} 
+            <PlayerPanda
+              values={blendshapes}
               springConfig={{ stiffness: 100, damping: 12, mass: 1 }}
             />
-            <Environment 
+            <Environment
               preset="apartment"
               blur={envBlur}
               background
@@ -97,14 +136,14 @@ export default function App() {
 
         <div
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 20,
             right: 20,
             width: 250,
             height: 250,
-            border: '3px solid #fff',
+            border: "3px solid #fff",
             borderRadius: 8,
-            overflow: 'hidden',
+            overflow: "hidden",
           }}
         >
           <Canvas
@@ -113,16 +152,28 @@ export default function App() {
               fov: cameraFov,
               rotation: [rotationX, 0, 0],
             }}
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: "100%", height: "100%" }}
             gl={{ antialias: true }}
             dpr={[1, 2]}
           >
             <Suspense fallback={null}>
               <ambientLight intensity={3} />
 
-              <pointLight color={light1Color} position={[0, 4, -4.5]} intensity={308} />
-              <pointLight color={light2Color} position={[0, -6.5, -8.5]} intensity={378} />
-              <pointLight color={light3Color} position={[0, 7, 11]} intensity={484} />
+              <pointLight
+                color={light1Color}
+                position={[0, 4, -4.5]}
+                intensity={308}
+              />
+              <pointLight
+                color={light2Color}
+                position={[0, -6.5, -8.5]}
+                intensity={378}
+              />
+              <pointLight
+                color={light3Color}
+                position={[0, 7, 11]}
+                intensity={484}
+              />
 
               <TargetPanda values={target} />
 
@@ -141,25 +192,26 @@ export default function App() {
 
         <div
           style={{
-            position: 'absolute',
+            position: "absolute",
             bottom: 20,
             left: 20,
-            color: '#fff',
+            color: "#fff",
             zIndex: 10,
           }}
         >
           <button onClick={() => setTarget(randomFace())}>New Target</button>
-          <button onClick={() => setScore(scoreMatch(target, blendshapes))}>Score</button>
-          <div style={{ marginTop: 8 }}>Score: {score ?? '-'}</div>
+          <button onClick={() => setScore(scoreMatch(target, blendshapes))}>
+            Score
+          </button>
+          <div style={{ marginTop: 8 }}>Score: {score ?? "-"}</div>
         </div>
 
-        <FaceControls blendshapes={blendshapes} onBlendshapesChange={setBlendshapes} />
-
-        </div>
+        <FaceControls
+          blendshapes={blendshapes}
+          onBlendshapesChange={setBlendshapes}
+        />
+      </div>
       {/* </div> */}
     </main>
   );
 }
-
-
-
