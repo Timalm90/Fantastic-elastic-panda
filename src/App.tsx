@@ -5,11 +5,9 @@ import * as THREE from "three";
 import { PlayerPanda } from "./components/scene/PlayerPanda";
 import { TargetPanda } from "./components/scene/TargetPanda";
 import { FaceControls } from "./components/controls/FaceControls";
-// import { SceneDebugController } from './components/debug/SceneDebugController'
 import { ApiTest } from "./dev/ApiTest";
 import Timer from "./components/ui/Timer";
 import { randomFace, scoreMatch } from "./utils/faceUtils";
-
 import type { BlendshapeValues } from "./types/blendshape";
 import type { AmbientLight, PointLight } from "three";
 import "./App.css";
@@ -30,20 +28,20 @@ export default function App() {
     {} as BlendshapeValues,
   );
   const [score, setScore] = useState<number | null>(null);
+  const [resetTrigger, setResetTrigger] = useState(0);
+  const [springConfig, setSpringConfig] = useState({
+    stiffness: 100,
+    damping: 12,
+    mass: 1,
+  });
 
-  // Calculate the y-offset for the target panda based on the Mouth_Down blendshape. Used to center model in the target window as mouth opens/closes.
   const yOffset = -0.25 + (target.Mouth_Down ?? 0) * 0.25;
-
-  //Calculate the z-offset for the target panda based on the cheek blendshapes. Used to prevent clipping to right and left when cheeks are stretched.
   const zOffset =
     0 + ((target.L_Cheek_Down || target.R_Cheek_Right) ?? 0) * -0.1;
 
-  // These refs always store the latest values,
-  // but changing them does NOT cause the timer to restart.
   const blendshapesRef = useRef(blendshapes);
   const targetRef = useRef(target);
 
-  // Keep refs updated with the newest state values.
   blendshapesRef.current = blendshapes;
   targetRef.current = target;
 
@@ -63,9 +61,7 @@ export default function App() {
   const pointLight2Ref = useRef<PointLight>(null!);
   const pointLight3Ref = useRef<PointLight>(null!);
 
-  // Animation state
   const [targetSpinTrigger, setTargetSpinTrigger] = useState(0);
-
   const TARGET_SPIN_START_DEGREES = -720;
   const TARGET_SPIN_DURATION_MS = 1200;
 
@@ -74,21 +70,24 @@ export default function App() {
     setTargetSpinTrigger((value) => value + 1);
   }
 
-  // This function finishes the game.
-  // It uses refs instead of state directly so the timer does not freeze while dragging.
+  const handleReset = () => {
+    setResetTrigger((v) => v + 1);
+    setSpringConfig({ stiffness: 180, damping: 8, mass: 1.4 });
+    setTimeout(() => {
+      setSpringConfig({ stiffness: 100, damping: 12, mass: 1 });
+    }, 1500);
+  };
+
   const handleGameComplete = useCallback(() => {
     const finalScore = scoreMatch(targetRef.current, blendshapesRef.current);
-
     setScore(finalScore);
     finishGame(finalScore);
   }, [finishGame]);
 
   const handlePlayAgain = () => {
     const newTarget = randomFace();
-
     setTarget(newTarget);
     targetRef.current = newTarget;
-
     setScore(null);
     startGame();
   };
@@ -101,10 +100,8 @@ export default function App() {
       <Button
         onClick={() => {
           const newTarget = randomFace();
-
           setTarget(newTarget);
           targetRef.current = newTarget;
-
           setScore(null);
           startGame();
         }}
@@ -127,6 +124,8 @@ export default function App() {
       >
         Score
       </button>
+
+      <Button onClick={handleReset}>Reset</Button>
 
       <Timer
         duration={10}
@@ -169,37 +168,9 @@ export default function App() {
               position={[0, 7, 11]}
               intensity={484}
             />
-            {/* <SceneDebugController
-              ambientLightRef={ambientLightRef}
-              pointLight1Ref={pointLight1Ref}
-              pointLight2Ref={pointLight2Ref}
-              pointLight3Ref={pointLight3Ref}
-              cameraX={cameraX}
-              cameraY={cameraY}
-              cameraZ={cameraZ}
-              cameraFov={cameraFov}
-              setCameraX={setCameraX}
-              setCameraY={setCameraY}
-              setCameraZ={setCameraZ}
-              setCameraFov={setCameraFov}
-              rotationX={rotationX}
-              setRotationX={setRotationX}
-              envIntensity={envIntensity}
-              envBlur={envBlur}
-              setEnvIntensity={setEnvIntensity}
-              setEnvBlur={setEnvBlur}
-              envRotation={envRotation}
-              setEnvRotation={setEnvRotation}
-              light1Color={light1Color}
-              setLight1Color={setLight1Color}
-              light2Color={light2Color}
-              setLight2Color={setLight2Color}
-              light3Color={light3Color}
-              setLight3Color={setLight3Color}
-            /> */}
             <PlayerPanda
               values={blendshapes}
-              springConfig={{ stiffness: 100, damping: 12, mass: 1 }}
+              springConfig={springConfig}
             />
             <Environment
               preset="apartment"
@@ -235,19 +206,16 @@ export default function App() {
           >
             <Suspense fallback={null}>
               <ambientLight intensity={3} />
-
               <pointLight
                 color={light1Color}
                 position={[0, 4, -4.5]}
                 intensity={308}
               />
-
               <pointLight
                 color={light2Color}
                 position={[0, -6.5, -8.5]}
                 intensity={378}
               />
-
               <pointLight
                 color={light3Color}
                 position={[0, 7, 11]}
@@ -262,16 +230,6 @@ export default function App() {
                   onSpinCovered={() => setTarget(randomFace())}
                 />
               </group>
-              {/* 
-              <Environment
-                preset="apartment"
-                blur={envBlur}
-                background
-                resolution={64}
-                environmentIntensity={envIntensity}
-                environmentRotation={[0, envRotation, 0]}
-                backgroundRotation={[0, envRotation, 0]}
-              /> */}
             </Suspense>
           </Canvas>
         </div>
@@ -292,9 +250,11 @@ export default function App() {
           <div style={{ marginTop: 8 }}>Score: {score ?? "-"}</div>
         </div>
 
-        <FaceControls onBlendshapesChange={setBlendshapes} />
+        <FaceControls
+          onBlendshapesChange={setBlendshapes}
+          resetTrigger={resetTrigger}
+        />
       </div>
-      {/* </div> */}
     </main>
   );
 }
