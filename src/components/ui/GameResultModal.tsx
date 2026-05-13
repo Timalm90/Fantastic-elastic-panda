@@ -4,11 +4,13 @@ import styles from "./GameResultModal.module.css";
 
 type GameResultModalProps = {
   score: number | null;
+  token: string | null;
   onExit: () => void;
 };
 
 export default function GameResultModal({
   score,
+  token,
   onExit,
 }: GameResultModalProps) {
   useEffect(() => {
@@ -36,6 +38,15 @@ export default function GameResultModal({
         <h2 id="game-result-title">Time’s up!</h2>
 
         <p>Your score: {score ?? "-"}</p>
+
+        {/* Show token if it exists */}
+        {token ? (
+          <p>
+            You received: <strong>{token}</strong>
+          </p>
+        ) : (
+          <p>Generating reward...</p>
+        )}
 
         <Button onClick={onExit}>Exit</Button>
       </div>

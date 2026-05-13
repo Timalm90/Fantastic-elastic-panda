@@ -23,6 +23,7 @@ export default function App() {
   const startGame = useGameStore((state) => state.startGame);
   const finishGame = useGameStore((state) => state.finishGame);
   const exitGame = useGameStore((state) => state.exitGame);
+  const [rewardToken, setRewardToken] = useState<string | null>(null);
 
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>(
     {} as BlendshapeValues,
@@ -81,6 +82,10 @@ export default function App() {
     const finalScore = scoreMatch(targetRef.current, blendshapesRef.current);
 
     setScore(finalScore);
+
+    // Temporary until API is ready
+    setRewardToken("Token will appear here from API later");
+
     finishGame(finalScore);
   }, [finishGame]);
 
@@ -122,7 +127,11 @@ export default function App() {
       />
 
       {phase === "finished" && (
-        <GameResultModal score={score} onExit={handleExitGame} />
+        <GameResultModal
+          score={score}
+          token={rewardToken}
+          onExit={handleExitGame}
+        />
       )}
 
       <div className="scene-wrapper">
