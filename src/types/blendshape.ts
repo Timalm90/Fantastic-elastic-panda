@@ -12,7 +12,7 @@ export type BlendshapeKey =
   | 'R_Brow_Down' | 'R_Brow_Left' | 'R_Brow_Right' | 'R_Brow_Up'
   | 'R_Cheek_Down' | 'R_Cheek_Right' | 'R_Cheek_Up'
   | 'R_Ear_Down' | 'R_Ear_Left' | 'R_Ear_Right' | 'R_Ear_Up'
-  | 'R_Eye_Blink'
+  | 'R_Eye_Blink'| 'Rotation'
 
 export type BlendshapeValues = Record<BlendshapeKey, number>
 
