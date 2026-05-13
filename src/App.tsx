@@ -31,6 +31,12 @@ export default function App() {
   );
   const [score, setScore] = useState<number | null>(null);
 
+  // Calculate the y-offset for the target panda based on the Mouth_Down blendshape. Used to center model in the target window as mouth opens/closes.
+  const yOffset = -0.25 + (target.Mouth_Down ?? 0) * 0.25;
+
+  //Calculate the z-offset for the target panda based on the cheek blendshapes. Used to prevent clipping to right and left when cheeks are stretched.
+  const zOffset = 0 + ((target.L_Cheek_Down || target.R_Cheek_Right) ?? 0) * -0.1;
+
   // These refs always store the latest values,
   // but changing them does NOT cause the timer to restart.
   const blendshapesRef = useRef(blendshapes);
@@ -114,6 +120,7 @@ export default function App() {
         onClick={() => {
           const finalScore = scoreMatch(target, blendshapes);
           setScore(finalScore);
+          setTargetSpinTrigger((value) => value + 1); 
           finishGame(finalScore);
         }}
       >
@@ -245,6 +252,7 @@ export default function App() {
                 position={[0, 7, 11]}
                 intensity={484}
               />
+          <group position={[0, yOffset, zOffset]}>
 
               <TargetPanda
                 values={target}
@@ -253,7 +261,8 @@ export default function App() {
                 spinDurationMs={TARGET_SPIN_DURATION_MS}
                 onSpinCovered={() => setTarget(randomFace())}
               />
-
+              </group>
+{/* 
               <Environment
                 preset="apartment"
                 blur={envBlur}
@@ -262,7 +271,7 @@ export default function App() {
                 environmentIntensity={envIntensity}
                 environmentRotation={[0, envRotation, 0]}
                 backgroundRotation={[0, envRotation, 0]}
-              />
+              /> */}
             </Suspense>
           </Canvas>
         </div>
