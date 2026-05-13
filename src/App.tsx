@@ -1,27 +1,25 @@
-import { useState, Suspense, useRef, useCallback } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Environment } from "@react-three/drei";
-import * as THREE from "three";
+import { useState, useRef, useCallback } from "react";
 import { PlayerPanda } from "./components/scene/PlayerPanda";
 import { TargetPanda } from "./components/scene/TargetPanda";
 import { FaceControls } from "./components/controls/FaceControls";
-import { SceneDebugController } from "./components/debug/SceneDebugController"; //Uncomment to enable interactive debug panel for lights, camera, and environment
-import { ApiTest } from "./dev/ApiTest";
 import Timer from "./components/ui/Timer";
 import { randomFace, scoreMatch } from "./utils/faceUtils";
 import type { BlendshapeValues } from "./types/blendshape";
-import type { AmbientLight, PointLight } from "three";
 import "./App.css";
 import Button from "./components/ui/Button";
 import { useGameStore } from "./store/gameStore";
 import GameResultModal from "./components/ui/GameResultModal";
 import styles from "./App.module.css";
+import { SceneLayout } from "./components/scene/SceneLayout";
+import { defaultSceneConfig } from "./config/sceneConfig";
 
 export default function App() {
   const phase = useGameStore((state) => state.phase);
   const startGame = useGameStore((state) => state.startGame);
   const finishGame = useGameStore((state) => state.finishGame);
   const exitGame = useGameStore((state) => state.exitGame);
+
+  const [sceneConfig, setSceneConfig] = useState(defaultSceneConfig);
 
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>(
     {} as BlendshapeValues,
@@ -37,7 +35,7 @@ export default function App() {
     mass: 1,
   });
 
-  const yOffset = -0.25 + (target.Mouth_Down ?? 0) * 0.25;
+  const yOffset = -0.25 + (target.Mouth_Down ?? 0) * 0.35;
   const zOffset =
     0 + ((target.L_Cheek_Down || target.R_Cheek_Right) ?? 0) * -0.1;
 
@@ -47,32 +45,9 @@ export default function App() {
   blendshapesRef.current = blendshapes;
   targetRef.current = target;
 
-  const [envIntensity, _setEnvIntensity] = useState(0.2);
-  const [envBlur, _setEnvBlur] = useState(0.7);
-  const [envRotation, _setEnvRotation] = useState(-0.65);
-  const [cameraX, _setCameraX] = useState(0);
-  const [cameraY, _setCameraY] = useState(-2.2);
-  const [cameraZ, _setCameraZ] = useState(5.4);
-  const [cameraFov, _setCameraFov] = useState(56);
-  const [rotationX, _setRotationX] = useState(0.2);
-
-  const [light1Color, _setLight1Color] = useState("#ff8e12");
-  const [light2Color, _setLight2Color] = useState("#ff7c00");
-  const [light3Color, _setLight3Color] = useState("#0081eb");
-
-  const ambientLightRef = useRef<AmbientLight>(null!);
-  const pointLight1Ref = useRef<PointLight>(null!);
-  const pointLight2Ref = useRef<PointLight>(null!);
-  const pointLight3Ref = useRef<PointLight>(null!);
-
   const [targetSpinTrigger, setTargetSpinTrigger] = useState(0);
   const TARGET_SPIN_START_DEGREES = -720;
   const TARGET_SPIN_DURATION_MS = 1200;
-
-  function handleNewTarget() {
-    setScore(null);
-    setTargetSpinTrigger((value) => value + 1);
-  }
 
   const handleReset = () => {
     setResetTrigger((v) => v + 1);
@@ -88,13 +63,6 @@ export default function App() {
     finishGame(finalScore);
   }, [finishGame]);
 
-  const handlePlayAgain = () => {
-    const newTarget = randomFace();
-    setTarget(newTarget);
-    targetRef.current = newTarget;
-    setScore(null);
-  };
-
   const handleExitGame = useCallback(() => {
     setScore(null);
     exitGame();
@@ -102,223 +70,93 @@ export default function App() {
 
   return (
     <main>
-
-      {/* <div className="UI-Debug">
-        <button onClick={handleNewTarget}>New Target</button>
-        <button onClick={() => setScore(scoreMatch(target, blendshapes))}>
-          Score
-        </button>
-        <div style={{ marginTop: 8 }}>Score: {score ?? "-"}</div>
-      </div> */}
-
       {/* <ApiTest /> */}
       {phase === "finished" && (
         <GameResultModal score={score} onExit={handleExitGame} />
       )}
 
-<div className="scene-wrapper">
-  <div className="gameplay-frame">
+      <div className="scene-wrapper">
+        <div className="gameplay-frame">
+          {/* PANDA INTERACTION AREA */}
+          <div className="panda-stage">
+            <SceneLayout
+              config={sceneConfig}
+              setConfig={setSceneConfig}
+              debug
+              className="main-canvas"
+            >
+              <PlayerPanda values={blendshapes} springConfig={springConfig} />
+            </SceneLayout>
 
-  {/* PANDA INTERACTION AREA */}
-  <div className="panda-stage">
-
-
-
-    <Canvas
-      className="main-canvas"
-      camera={{
-        position: [cameraX, -2.0, cameraZ],
-        fov: cameraFov,
-        rotation: [rotationX, 0, 0],
-      }}
-      gl={{
-        antialias: true,
-        alpha: true,
-      }}
-      dpr={[1, 2]}
-      onCreated={({ gl, scene }) => {
-        gl.setClearColor(0x000000, 0)
-        scene.background = null
-      }}
-    >
-      <Suspense fallback={null}>
-
-    <SceneDebugController
-                ambientLightRef={ambientLightRef}
-                pointLight1Ref={pointLight1Ref}
-                pointLight2Ref={pointLight2Ref}
-                pointLight3Ref={pointLight3Ref}
-                cameraX={cameraX}
-                cameraY={cameraY}
-                cameraZ={cameraZ}
-                cameraFov={cameraFov}
-                setCameraX={_setCameraX}
-                setCameraY={_setCameraY}
-                setCameraZ={_setCameraZ}
-                setCameraFov={_setCameraFov}
-                rotationX={rotationX}
-                setRotationX={_setRotationX}
-                envIntensity={envIntensity}
-                envBlur={envBlur}
-                setEnvIntensity={_setEnvIntensity}
-                setEnvBlur={_setEnvBlur}
-                envRotation={envRotation}
-                setEnvRotation={_setEnvRotation}
-                light1Color={light1Color}
-                setLight1Color={_setLight1Color}
-                light2Color={light2Color}
-                setLight2Color={_setLight2Color}
-                light3Color={light3Color}
-                setLight3Color={_setLight3Color}
-              /> 
-        <ambientLight ref={ambientLightRef} intensity={1.0} />
-
-        <pointLight
-          ref={pointLight1Ref}
-          color={light1Color}
-          position={[0.5, -5.0, -3.0]}
-          intensity={500}
-        />
-
-        <pointLight
-          ref={pointLight2Ref}
-          color={light2Color}
-          position={[1.0, 11.5, 7.0]}
-          intensity={500}
-        />
-
-        <pointLight
-          ref={pointLight3Ref}
-          color={light3Color}
-          position={[0.0, 3, -1.5]}
-          intensity={500}
-        />
-
-        <PlayerPanda
-          values={blendshapes}
-          springConfig={springConfig}
-        />
-
-        <Environment
-          preset="dawn"
-          blur={envBlur}
-          resolution={64}
-          environmentIntensity={envIntensity}
-          environmentRotation={[0, envRotation, 0]}
-        />
-      </Suspense>
-    </Canvas>
-
-    <FaceControls
-      onBlendshapesChange={setBlendshapes}
-      resetTrigger={resetTrigger}
-    />
-  </div>
-
-  {/* UI OVERLAY */}
-  <div className="overlay-ui">
-
-    <div className="top-bar">
-      <Timer
-        duration={10}
-        isRunning={phase === "playing"}
-        onComplete={handleGameComplete}
-      />
-    </div>
-
-<div className={styles.targetWindow}>
-  <h1 className={styles.windowText}>TARGET</h1>
-
-  <div className={styles.targetCanvasWrapper}>
-      <Canvas
-        camera={{
-          position: [cameraX, cameraY, cameraZ * 0.65],
-          fov: cameraFov,
-          rotation: [rotationX, 0, 0],
-        }}
-        gl={{ antialias: true }}
-        dpr={[1, 2]}
-        onCreated={({ scene }) => {
-          scene.background = new THREE.Color("#53518d")
-        }}
-      >
-        <Suspense fallback={null}>
-                 <ambientLight ref={ambientLightRef} intensity={1.0} />
-
-        <pointLight
-          ref={pointLight1Ref}
-          color={light1Color}
-          position={[0.5, -5.0, -3.0]}
-          intensity={500}
-        />
-
-        <pointLight
-          ref={pointLight2Ref}
-          color={light2Color}
-          position={[1.0, 11.5, 7.0]}
-          intensity={500}
-        />
-
-        <pointLight
-          ref={pointLight3Ref}
-          color={light3Color}
-          position={[0.0, 3, -1.5]}
-          intensity={500}
-        />
-
-        <Environment
-          preset="dawn"
-          blur={envBlur}
-          resolution={64}
-          environmentIntensity={envIntensity}
-          environmentRotation={[0, envRotation, 0]}
-        />
-          <group position={[0, yOffset, zOffset]}>
-            <TargetPanda
-              values={target}
-              spinTrigger={targetSpinTrigger}
-              spinStartDegrees={TARGET_SPIN_START_DEGREES}
-              spinDurationMs={TARGET_SPIN_DURATION_MS}
-              onSpinCovered={() => setTarget(randomFace())}
+            <FaceControls
+              onBlendshapesChange={setBlendshapes}
+              resetTrigger={resetTrigger}
             />
-          </group>
-        </Suspense>
-      </Canvas>
+          </div>
+
+          {/* UI OVERLAY */}
+          <div className="overlay-ui">
+            <div className="top-bar">
+              <Timer
+                duration={10}
+                isRunning={phase === "playing"}
+                onComplete={handleGameComplete}
+              />
+            </div>
+
+            <div className={styles.targetWindow}>
+              <h1 className={styles.windowText}>TARGET</h1>
+
+              <div className={styles.targetCanvasWrapper}>
+                <SceneLayout
+                  config={sceneConfig}
+                  background="#53518d"
+                  cameraOverride={{
+                    z: sceneConfig.camera.z * 0.65,
+                  }}
+                >
+                  {" "}
+                  <group position={[0, yOffset, zOffset]}>
+                    <TargetPanda
+                      values={target}
+                      spinTrigger={targetSpinTrigger}
+                      spinStartDegrees={TARGET_SPIN_START_DEGREES}
+                      spinDurationMs={TARGET_SPIN_DURATION_MS}
+                      onSpinCovered={() => setTarget(randomFace())}
+                    />
+                  </group>
+                </SceneLayout>
+              </div>
+            </div>
+
+            <div className="bottom-controls">
+              <Button
+                onClick={() => {
+                  const newTarget = randomFace();
+                  setTarget(newTarget);
+                  targetRef.current = newTarget;
+                  setScore(null);
+                  setTargetSpinTrigger((v) => v + 1);
+                  startGame();
+                }}
+              >
+                Play
+              </Button>
+
+              <Button
+                onClick={() => console.log("clicked tutorial")}
+                variant="secondary"
+              >
+                Tutorial
+              </Button>
+
+              <Button onClick={handleGameComplete}>Score</Button>
+
+              <Button onClick={handleReset}>Reset</Button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div className="bottom-controls">
-<Button
-  onClick={() => {
-    const newTarget = randomFace()
-    setTarget(newTarget)
-    targetRef.current = newTarget
-    setScore(null)
-    setTargetSpinTrigger((v) => v + 1)  // ← add this
-    startGame()
-  }}
->
-  Play
-</Button>
-
-      <Button
-        onClick={() => console.log("clicked tutorial")}
-        variant="secondary"
-      >
-        Tutorial
-      </Button>
-
-      <Button onClick={handleGameComplete}>
-        Score
-      </Button>
-
-      <Button onClick={handleReset}>
-        Reset
-      </Button>
-    </div>
-</div>
-  </div>
-</div>
-</main>
+    </main>
   );
 }
