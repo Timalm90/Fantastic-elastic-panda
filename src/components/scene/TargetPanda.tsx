@@ -56,6 +56,8 @@ export const TargetPanda = React.forwardRef<THREE.Group, TargetPandaProps>(
       elapsed: 0,
       coveredCalled: false,
       rotationBlendshape: 0,
+      revealProgress: 0,
+
     })
 
     function easeInOut(t: number) {
@@ -110,6 +112,8 @@ export const TargetPanda = React.forwardRef<THREE.Group, TargetPandaProps>(
       spinRef.current.elapsed = 0
       spinRef.current.coveredCalled = false
       spinRef.current.rotationBlendshape = 0
+      spinRef.current.revealProgress = 0
+
 
       if (groupRef.current) {
         groupRef.current.rotation.y = THREE.MathUtils.degToRad(spinStartDegrees)
@@ -133,6 +137,12 @@ export const TargetPanda = React.forwardRef<THREE.Group, TargetPandaProps>(
           spin.coveredCalled = true
           onSpinCovered?.()
         }
+        if (spin.coveredCalled) {
+  // map t from 0.35–1.0 to 0–1
+    spin.revealProgress = Math.min((t - 0.35) / 0.45, 1)
+  } else {
+    spin.revealProgress = 0
+  }
 
         if (t >= 1) {
           spin.active = false
@@ -162,7 +172,7 @@ export const TargetPanda = React.forwardRef<THREE.Group, TargetPandaProps>(
       for (const key of MORPH_KEYS) {
         if (key === 'Rotation') continue
 
-        let value = constrainedValues[key] ?? 0
+      let value = (constrainedValues[key] ?? 0) * spin.revealProgress
 
         if (key === 'Blink') {
           value = Math.min(1, value + blinkValue)

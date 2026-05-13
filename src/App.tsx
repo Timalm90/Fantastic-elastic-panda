@@ -35,7 +35,8 @@ export default function App() {
   const yOffset = -0.25 + (target.Mouth_Down ?? 0) * 0.25;
 
   //Calculate the z-offset for the target panda based on the cheek blendshapes. Used to prevent clipping to right and left when cheeks are stretched.
-  const zOffset = 0 + ((target.L_Cheek_Down || target.R_Cheek_Right) ?? 0) * -0.1;
+  const zOffset =
+    0 + ((target.L_Cheek_Down || target.R_Cheek_Right) ?? 0) * -0.1;
 
   // These refs always store the latest values,
   // but changing them does NOT cause the timer to restart.
@@ -120,7 +121,7 @@ export default function App() {
         onClick={() => {
           const finalScore = scoreMatch(target, blendshapes);
           setScore(finalScore);
-          setTargetSpinTrigger((value) => value + 1); 
+          setTargetSpinTrigger((value) => value + 1);
           finishGame(finalScore);
         }}
       >
@@ -252,17 +253,16 @@ export default function App() {
                 position={[0, 7, 11]}
                 intensity={484}
               />
-          <group position={[0, yOffset, zOffset]}>
-
-              <TargetPanda
-                values={target}
-                spinTrigger={targetSpinTrigger}
-                spinStartDegrees={TARGET_SPIN_START_DEGREES}
-                spinDurationMs={TARGET_SPIN_DURATION_MS}
-                onSpinCovered={() => setTarget(randomFace())}
-              />
+              <group position={[0, yOffset, zOffset]}>
+                <TargetPanda
+                  values={target}
+                  spinTrigger={targetSpinTrigger}
+                  spinStartDegrees={TARGET_SPIN_START_DEGREES}
+                  spinDurationMs={TARGET_SPIN_DURATION_MS}
+                  onSpinCovered={() => setTarget(randomFace())}
+                />
               </group>
-{/* 
+              {/* 
               <Environment
                 preset="apartment"
                 blur={envBlur}
