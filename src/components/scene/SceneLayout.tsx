@@ -22,7 +22,7 @@ export function SceneLayout() {
       >
         <Suspense fallback={null}>
           {/* Lighting setup */}
-          <ambientLight intensity={0.4} />
+          <ambientLight intensity={0.5} />
           <pointLight position={[10, 10, 5]} intensity={1} />
           <pointLight position={[-10, -10, -5]} intensity={1} />
 

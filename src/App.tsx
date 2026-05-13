@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { PlayerPanda } from "./components/scene/PlayerPanda";
 import { TargetPanda } from "./components/scene/TargetPanda";
 import { FaceControls } from "./components/controls/FaceControls";
-// import { SceneDebugController } from "./components/debug/SceneDebugController"; //Uncomment to enable interactive debug panel for lights, camera, and environment
+import { SceneDebugController } from "./components/debug/SceneDebugController"; //Uncomment to enable interactive debug panel for lights, camera, and environment
 import { ApiTest } from "./dev/ApiTest";
 import Timer from "./components/ui/Timer";
 import { randomFace, scoreMatch } from "./utils/faceUtils";
@@ -47,17 +47,19 @@ export default function App() {
   blendshapesRef.current = blendshapes;
   targetRef.current = target;
 
-  const [envIntensity, _setEnvIntensity] = useState(0.1);
+  const [envIntensity, _setEnvIntensity] = useState(0.2);
   const [envBlur, _setEnvBlur] = useState(0.7);
-  const [envRotation, _setEnvRotation] = useState(-3.1);
+  const [envRotation, _setEnvRotation] = useState(-0.65);
   const [cameraX, _setCameraX] = useState(0);
   const [cameraY, _setCameraY] = useState(-2.2);
   const [cameraZ, _setCameraZ] = useState(5.4);
   const [cameraFov, _setCameraFov] = useState(56);
   const [rotationX, _setRotationX] = useState(0.2);
-  const [light1Color, _setLight1Color] = useState("#0450d5");
-  const [light2Color, _setLight2Color] = useState("#d63404");
-  const [light3Color, _setLight3Color] = useState("#ffbd8f");
+
+  const [light1Color, _setLight1Color] = useState("#ff8e12");
+  const [light2Color, _setLight2Color] = useState("#ff7c00");
+  const [light3Color, _setLight3Color] = useState("#0081eb");
+
   const ambientLightRef = useRef<AmbientLight>(null!);
   const pointLight1Ref = useRef<PointLight>(null!);
   const pointLight2Ref = useRef<PointLight>(null!);
@@ -120,6 +122,8 @@ export default function App() {
   {/* PANDA INTERACTION AREA */}
   <div className="panda-stage">
 
+
+
     <Canvas
       className="main-canvas"
       camera={{
@@ -138,27 +142,56 @@ export default function App() {
       }}
     >
       <Suspense fallback={null}>
-        <ambientLight ref={ambientLightRef} intensity={3} />
+
+    <SceneDebugController
+                ambientLightRef={ambientLightRef}
+                pointLight1Ref={pointLight1Ref}
+                pointLight2Ref={pointLight2Ref}
+                pointLight3Ref={pointLight3Ref}
+                cameraX={cameraX}
+                cameraY={cameraY}
+                cameraZ={cameraZ}
+                cameraFov={cameraFov}
+                setCameraX={_setCameraX}
+                setCameraY={_setCameraY}
+                setCameraZ={_setCameraZ}
+                setCameraFov={_setCameraFov}
+                rotationX={rotationX}
+                setRotationX={_setRotationX}
+                envIntensity={envIntensity}
+                envBlur={envBlur}
+                setEnvIntensity={_setEnvIntensity}
+                setEnvBlur={_setEnvBlur}
+                envRotation={envRotation}
+                setEnvRotation={_setEnvRotation}
+                light1Color={light1Color}
+                setLight1Color={_setLight1Color}
+                light2Color={light2Color}
+                setLight2Color={_setLight2Color}
+                light3Color={light3Color}
+                setLight3Color={_setLight3Color}
+              /> 
+        <ambientLight ref={ambientLightRef} intensity={1.0} />
 
         <pointLight
           ref={pointLight1Ref}
           color={light1Color}
-          position={[0, 4, -4.5]}
-          intensity={308}
+          position={[0.5, -5.0, -3.0]}
+          intensity={500}
         />
 
         <pointLight
           ref={pointLight2Ref}
           color={light2Color}
-          position={[0, -6.5, -8.5]}
-          intensity={378}
+          position={[1.0, 11.5, 7.0]}
+          intensity={500}
         />
 
         <pointLight
           ref={pointLight3Ref}
           color={light3Color}
-          position={[0, 7, 11]}
-          intensity={484}
+          position={[0.0, 3, -1.5]}
+          intensity={500}
         />
 
         <PlayerPanda
@@ -167,7 +200,7 @@ export default function App() {
         />
 
         <Environment
-          preset="apartment"
+          preset="dawn"
           blur={envBlur}
           resolution={64}
           environmentIntensity={envIntensity}
@@ -210,26 +243,36 @@ export default function App() {
         }}
       >
         <Suspense fallback={null}>
-          <ambientLight intensity={3} />
+                 <ambientLight ref={ambientLightRef} intensity={1.0} />
 
-          <pointLight
-            color={light1Color}
-            position={[0, 4, -4.5]}
-            intensity={308}
-          />
+        <pointLight
+          ref={pointLight1Ref}
+          color={light1Color}
+          position={[0.5, -5.0, -3.0]}
+          intensity={500}
+        />
 
-          <pointLight
-            color={light2Color}
-            position={[0, -6.5, -8.5]}
-            intensity={378}
-          />
+        <pointLight
+          ref={pointLight2Ref}
+          color={light2Color}
+          position={[1.0, 11.5, 7.0]}
+          intensity={500}
+        />
 
-          <pointLight
-            color={light3Color}
-            position={[0, 7, 11]}
-            intensity={484}
-          />
+        <pointLight
+          ref={pointLight3Ref}
+          color={light3Color}
+          position={[0.0, 3, -1.5]}
+          intensity={500}
+        />
 
+        <Environment
+          preset="dawn"
+          blur={envBlur}
+          resolution={64}
+          environmentIntensity={envIntensity}
+          environmentRotation={[0, envRotation, 0]}
+        />
           <group position={[0, yOffset, zOffset]}>
             <TargetPanda
               values={target}
