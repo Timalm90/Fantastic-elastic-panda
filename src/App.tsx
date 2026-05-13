@@ -5,7 +5,8 @@ import * as THREE from "three";
 import { PlayerPanda } from "./components/scene/PlayerPanda";
 import { TargetPanda } from "./components/scene/TargetPanda";
 import { FaceControls } from "./components/controls/FaceControls";
-import { ApiTest } from "./dev/ApiTest";
+// import { SceneDebugController } from "./components/debug/SceneDebugController";
+{ ApiTest } from "./dev/ApiTest";
 import Timer from "./components/ui/Timer";
 import { randomFace, scoreMatch } from "./utils/faceUtils";
 import type { BlendshapeValues } from "./types/blendshape";
@@ -85,14 +86,17 @@ export default function App() {
     finishGame(finalScore);
   }, [finishGame]);
 
-  const handlePlayAgain = () => {
-    const newTarget = randomFace();
-    setTarget(newTarget);
-    targetRef.current = newTarget;
-  const handleExitGame = useCallback(() => {
-    setScore(null);
-    exitGame();
-  }, [exitGame]);
+const handlePlayAgain = () => {
+  const newTarget = randomFace();
+  setTarget(newTarget);
+  targetRef.current = newTarget;
+  setScore(null);
+};
+
+const handleExitGame = useCallback(() => {
+  setScore(null);
+  exitGame();
+}, [exitGame]);
 
   return (
     <main>
