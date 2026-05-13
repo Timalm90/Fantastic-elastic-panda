@@ -1,6 +1,7 @@
 import { useState, Suspense, useRef, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
+import * as THREE from "three";
 import { PlayerPanda } from "./components/scene/PlayerPanda";
 import { TargetPanda } from "./components/scene/TargetPanda";
 import { FaceControls } from "./components/controls/FaceControls";
@@ -15,6 +16,7 @@ import "./App.css";
 import Button from "./components/ui/Button";
 import { useGameStore } from "./store/gameStore";
 import GameResultModal from "./components/ui/GameResultModal";
+import styles from "./App.module.css";
 
 export default function App() {
   const phase = useGameStore((state) => state.phase);
@@ -29,6 +31,13 @@ export default function App() {
     {} as BlendshapeValues,
   );
   const [score, setScore] = useState<number | null>(null);
+
+  // Calculate the y-offset for the target panda based on the Mouth_Down blendshape. Used to center model in the target window as mouth opens/closes.
+  const yOffset = -0.25 + (target.Mouth_Down ?? 0) * 0.25;
+
+  //Calculate the z-offset for the target panda based on the cheek blendshapes. Used to prevent clipping to right and left when cheeks are stretched.
+  const zOffset =
+    0 + ((target.L_Cheek_Down || target.R_Cheek_Right) ?? 0) * -0.1;
 
   // These refs always store the latest values,
   // but changing them does NOT cause the timer to restart.
@@ -54,6 +63,17 @@ export default function App() {
   const pointLight1Ref = useRef<PointLight>(null!);
   const pointLight2Ref = useRef<PointLight>(null!);
   const pointLight3Ref = useRef<PointLight>(null!);
+
+  // Animation state
+  const [targetSpinTrigger, setTargetSpinTrigger] = useState(0);
+
+  const TARGET_SPIN_START_DEGREES = -720;
+  const TARGET_SPIN_DURATION_MS = 1200;
+
+  function handleNewTarget() {
+    setScore(null);
+    setTargetSpinTrigger((value) => value + 1);
+  }
 
   // This function finishes the game.
   // It uses refs instead of state directly so the timer does not freeze while dragging.
@@ -180,27 +200,25 @@ export default function App() {
           </Suspense>
         </Canvas>
 
-        <div
-          style={{
-            position: "absolute",
-            top: 20,
-            right: 20,
-            width: 250,
-            height: 250,
-            border: "3px solid #fff",
-            borderRadius: 8,
-            overflow: "hidden",
-          }}
-        >
+        <div className={styles.targetWindow}>
+          <h1 className={styles.windowText}>TARGET</h1>
           <Canvas
             camera={{
-              position: [cameraX, cameraY, cameraZ * 0.6],
+              position: [cameraX, cameraY, cameraZ * 0.65],
               fov: cameraFov,
               rotation: [rotationX, 0, 0],
             }}
-            style={{ width: "100%", height: "100%" }}
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: 20,
+              overflow: "hidden",
+            }}
             gl={{ antialias: true }}
             dpr={[1, 2]}
+            onCreated={({ scene }) => {
+              scene.background = new THREE.Color("#53518d");
+            }}
           >
             <Suspense fallback={null}>
               <ambientLight intensity={3} />
@@ -210,19 +228,28 @@ export default function App() {
                 position={[0, 4, -4.5]}
                 intensity={308}
               />
+
               <pointLight
                 color={light2Color}
                 position={[0, -6.5, -8.5]}
                 intensity={378}
               />
+
               <pointLight
                 color={light3Color}
                 position={[0, 7, 11]}
                 intensity={484}
               />
-
-              <TargetPanda values={target} />
-
+              <group position={[0, yOffset, zOffset]}>
+                <TargetPanda
+                  values={target}
+                  spinTrigger={targetSpinTrigger}
+                  spinStartDegrees={TARGET_SPIN_START_DEGREES}
+                  spinDurationMs={TARGET_SPIN_DURATION_MS}
+                  onSpinCovered={() => setTarget(randomFace())}
+                />
+              </group>
+              {/* 
               <Environment
                 preset="apartment"
                 blur={envBlur}
@@ -231,7 +258,7 @@ export default function App() {
                 environmentIntensity={envIntensity}
                 environmentRotation={[0, envRotation, 0]}
                 backgroundRotation={[0, envRotation, 0]}
-              />
+              /> */}
             </Suspense>
           </Canvas>
         </div>
@@ -245,7 +272,7 @@ export default function App() {
             zIndex: 10,
           }}
         >
-          <button onClick={() => setTarget(randomFace())}>New Target</button>
+          <button onClick={handleNewTarget}>New Target</button>
           <button onClick={() => setScore(scoreMatch(target, blendshapes))}>
             Score
           </button>

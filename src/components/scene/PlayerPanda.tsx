@@ -5,6 +5,7 @@ import { useFrame } from '@react-three/fiber'
 import type { GLTF } from 'three-stdlib'
 import { stepSpring, useSpringStates } from '../../hooks/useSpring'
 import type { SpringConfig } from '../../hooks/useSpring'
+import { useBlinkAnimation } from '../../hooks/useBlinkAnimation'
 import { MORPH_KEYS } from '../../config/morphKeys'
 
 type GLTFResult = GLTF & {
@@ -25,23 +26,37 @@ export const PlayerPanda = React.forwardRef<THREE.Group, PlayerPandaProps>((prop
   const { nodes, materials } = useGLTF('/panda.glb') as unknown as GLTFResult
   const meshRef = useRef<THREE.Mesh>(null)
   const springs = useSpringStates(MORPH_KEYS)
+  const { updateBlink } = useBlinkAnimation()
 
   useFrame((_, delta) => {
     const mesh = meshRef.current
-    if (!mesh?.morphTargetDictionary || !mesh.morphTargetInfluences) return
+    if (!mesh?.morphTargetDictionary) return
+
+    // Initialize morphTargetInfluences if needed
+    if (!mesh.morphTargetInfluences) {
+      mesh.morphTargetInfluences = new Array(mesh.geometry.morphAttributes.position?.length ?? 0).fill(0)
+    }
+
+    // Update blink animation
+    const blinkValue = updateBlink(delta * 1000)
 
     for (const key of MORPH_KEYS) {
+      const idx = mesh.morphTargetDictionary[key]
+      if (idx === undefined) continue
+
+      // Blink bypasses spring smoothing to avoid double-smoothing
+      // (useBlinkAnimation already spring-animates the blink value)
+      if (key === 'Blink') {
+        const baseBlink = values[key] ?? 0
+        mesh.morphTargetInfluences[idx] = Math.min(1, baseBlink + blinkValue)
+        continue
+      }
+
+      // All other morphs go through spring smoothing
       const target = values[key] ?? 0
       const current = springs.current[key]
-
-      // Step the spring toward the target value
       springs.current[key] = stepSpring(current, target, delta, springConfig)
-
-      // Write the animated value to the mesh
-      const idx = mesh.morphTargetDictionary[key]
-      if (idx !== undefined) {
-        mesh.morphTargetInfluences[idx] = springs.current[key].value
-      }
+      mesh.morphTargetInfluences[idx] = springs.current[key].value
     }
   })
 
@@ -54,7 +69,6 @@ export const PlayerPanda = React.forwardRef<THREE.Group, PlayerPandaProps>((prop
           geometry={nodes.Panda001.geometry}
           material={materials.Panda}
           morphTargetDictionary={nodes.Panda001.morphTargetDictionary}
-          morphTargetInfluences={nodes.Panda001.morphTargetInfluences}
           position={[0, 62.02, 29.72]}
           receiveShadow={props.receiveShadow}
           castShadow={props.castShadow}

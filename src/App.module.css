@@ -1,0 +1,45 @@
+.targetWindow {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 250px;
+  height: 250px;
+
+  border-radius: 30px;
+  padding: 10px;
+  box-sizing: border-box;
+
+  background: linear-gradient(
+    135deg,
+    #777ec0 0%,
+    #4e256c 40%,
+    #9383b2 100%
+  );
+
+  box-shadow:
+    0 8px 32px rgba(69, 85, 108, 0.45),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.windowText {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+
+  margin: 0;
+  z-index: 10;
+
+  text-align: center;
+  pointer-events: none;
+
+  color: #ffe57e;
+  font-size: 24px;
+  font-weight: bold;
+
+  text-shadow:
+    0 1px 0 #000,
+    0 2px 0 #000,
+    0 3px 0 #000,
+    0 4px 6px rgba(0, 0, 0, 0.6);
+}
