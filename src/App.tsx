@@ -5,8 +5,8 @@ import * as THREE from "three";
 import { PlayerPanda } from "./components/scene/PlayerPanda";
 import { TargetPanda } from "./components/scene/TargetPanda";
 import { FaceControls } from "./components/controls/FaceControls";
-// import { SceneDebugController } from "./components/debug/SceneDebugController";
-{ ApiTest } from "./dev/ApiTest";
+// import { SceneDebugController } from "./components/debug/SceneDebugController"; //Uncomment to enable interactive debug panel for lights, camera, and environment
+import { ApiTest } from "./dev/ApiTest";
 import Timer from "./components/ui/Timer";
 import { randomFace, scoreMatch } from "./utils/faceUtils";
 import type { BlendshapeValues } from "./types/blendshape";
@@ -134,6 +134,10 @@ const handleExitGame = useCallback(() => {
         <GameResultModal score={score} onExit={handleExitGame} />
       )}
 
+
+
+
+
       <div className="scene-wrapper">
         <Canvas
           camera={{
@@ -145,6 +149,37 @@ const handleExitGame = useCallback(() => {
           gl={{ antialias: true }}
           dpr={[1, 2]}
         >
+  {/* 
+    <SceneDebugController
+                ambientLightRef={ambientLightRef}
+                pointLight1Ref={pointLight1Ref}
+                pointLight2Ref={pointLight2Ref}
+                pointLight3Ref={pointLight3Ref}
+                cameraX={cameraX}
+                cameraY={cameraY}
+                cameraZ={cameraZ}
+                cameraFov={cameraFov}
+                setCameraX={_setCameraX}
+                setCameraY={_setCameraY}
+                setCameraZ={_setCameraZ}
+                setCameraFov={_setCameraFov}
+                rotationX={rotationX}
+                setRotationX={_setRotationX}
+                envIntensity={envIntensity}
+                envBlur={envBlur}
+                setEnvIntensity={_setEnvIntensity}
+                setEnvBlur={_setEnvBlur}
+                envRotation={envRotation}
+                setEnvRotation={_setEnvRotation}
+                light1Color={light1Color}
+                setLight1Color={_setLight1Color}
+                light2Color={light2Color}
+                setLight2Color={_setLight2Color}
+                light3Color={light3Color}
+                setLight3Color={_setLight3Color}
+              />  */}
+
+
           <Suspense fallback={null}>
             <ambientLight ref={ambientLightRef} intensity={3} />
             <pointLight
