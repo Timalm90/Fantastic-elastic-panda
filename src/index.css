@@ -114,12 +114,6 @@ body {
   position: absolute;
   inset: 0;
 
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.05),
-      rgba(0,0,0,0.35)
-    );
 
   pointer-events: none;
 
@@ -141,9 +135,11 @@ body {
 }
 
 
-.main-canvas,
-.panda-stage > div {
-  position: absolute !important;
-  inset: 0;
-}
+@media (max-width: 768px) {
+  .targetWindow {
+    width: clamp(100px, 24vw, 170px);
 
+    top: 3%;
+    right: 3%;
+  }
+}

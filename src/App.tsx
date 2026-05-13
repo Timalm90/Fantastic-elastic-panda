@@ -109,7 +109,7 @@ export default function App() {
         <div style={{ marginTop: 8 }}>Score: {score ?? "-"}</div>
       </div> */}
 
-      <ApiTest />
+      {/* <ApiTest /> */}
       {phase === "finished" && (
         <GameResultModal score={score} onExit={handleExitGame} />
       )}
@@ -243,17 +243,18 @@ export default function App() {
     </div>
 
     <div className="bottom-controls">
-      <Button
-        onClick={() => {
-          const newTarget = randomFace()
-          setTarget(newTarget)
-          targetRef.current = newTarget
-          setScore(null)
-          startGame()
-        }}
-      >
-        Play
-      </Button>
+<Button
+  onClick={() => {
+    const newTarget = randomFace()
+    setTarget(newTarget)
+    targetRef.current = newTarget
+    setScore(null)
+    setTargetSpinTrigger((v) => v + 1)  // ← add this
+    startGame()
+  }}
+>
+  Play
+</Button>
 
       <Button
         onClick={() => console.log("clicked tutorial")}
