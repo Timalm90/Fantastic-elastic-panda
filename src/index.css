@@ -5,8 +5,7 @@
 }
 
 :root {
-    display: grid;
-  place-items: center;
+
   /* Primary colors (timer / UI) */
   --color-red-main: #b54824;
   --color-red-dark: #8f2f1d;
@@ -26,16 +25,6 @@
   /* Neutral */
   --color-black: #000;
   --color-white: #fff;
-}
-
-body {
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-
-  /* Optional */
-  overflow-x: hidden;
 }
 
 canvas {
@@ -78,8 +67,11 @@ body {
 
   aspect-ratio: 9 / 16;
 
-  width: min(100vw, calc(100vh * 9 / 16));
-  height: min(100vh, calc(100vw * 16 / 9));
+  width: 100vw;
+  height: 100vh;
+
+  max-width: calc(100vh * 9 / 16);
+  max-height: 100vh;
 
   overflow: hidden;
 
@@ -133,6 +125,7 @@ body {
   position: absolute;
   inset: 0;
 }
+
 
 
 @media (max-width: 768px) {

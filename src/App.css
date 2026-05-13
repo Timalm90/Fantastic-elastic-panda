@@ -33,13 +33,18 @@ button:active {
 .bottom-controls {
   position: absolute;
 
-  bottom: 4%;
+  bottom: max(18px, env(safe-area-inset-bottom));
   left: 50%;
 
   transform: translateX(-50%);
 
+  width: min(92%, 520px);
+
   display: flex;
-  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  gap: 10px;
 
   z-index: 50;
 }

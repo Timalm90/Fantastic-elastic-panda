@@ -123,7 +123,7 @@ export default function App() {
     <Canvas
       className="main-canvas"
       camera={{
-        position: [cameraX, -2.7, cameraZ],
+        position: [cameraX, -2.0, cameraZ],
         fov: cameraFov,
         rotation: [rotationX, 0, 0],
       }}
@@ -193,9 +193,10 @@ export default function App() {
       />
     </div>
 
-    <div className={styles.targetWindow}>
-      <h1 className={styles.windowText}>TARGET</h1>
+<div className={styles.targetWindow}>
+  <h1 className={styles.windowText}>TARGET</h1>
 
+  <div className={styles.targetCanvasWrapper}>
       <Canvas
         camera={{
           position: [cameraX, cameraY, cameraZ * 0.65],
@@ -240,6 +241,7 @@ export default function App() {
           </group>
         </Suspense>
       </Canvas>
+      </div>
     </div>
 
     <div className="bottom-controls">

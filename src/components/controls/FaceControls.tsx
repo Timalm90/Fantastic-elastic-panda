@@ -10,18 +10,18 @@ interface FaceControlsProps {
 }
 
 const ZONE_POSITIONS = {
-  r_ear:   { top: '32%', left: '80%' },
-  l_ear:   { top: '32%', left: '20%' },
+  r_ear:   { top: '45%', left: '80%' },
+  l_ear:   { top: '45%', left: '20%' },
 
-  r_brow:  { top: '37%', left: '62%' },
-  l_brow:  { top: '37%', left: '38%' },
+  r_brow:  { top: '50%', left: '62%' },
+  l_brow:  { top: '50%', left: '38%' },
 
-  r_cheek: { top: '50%', left: '70%' },
-  l_cheek: { top: '50%', left: '30%' },
+  r_cheek: { top: '65%', left: '70%' },
+  l_cheek: { top: '65%', left: '30%' },
 
-  nose:    { top: '48%', left: '50%' },
+  nose:    { top: '63%', left: '50%' },
 
-  mouth:   { top: '60%', left: '50%' },
+  mouth:   { top: '72%', left: '50%' },
 }
 const OFFSET_FRACTION = 0.06
 
