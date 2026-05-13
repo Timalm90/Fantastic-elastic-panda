@@ -22,6 +22,7 @@ export default function App() {
   const phase = useGameStore((state) => state.phase);
   const startGame = useGameStore((state) => state.startGame);
   const finishGame = useGameStore((state) => state.finishGame);
+  const exitGame = useGameStore((state) => state.exitGame);
 
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>(
     {} as BlendshapeValues,
@@ -83,15 +84,10 @@ export default function App() {
     finishGame(finalScore);
   }, [finishGame]);
 
-  const handlePlayAgain = () => {
-    const newTarget = randomFace();
-
-    setTarget(newTarget);
-    targetRef.current = newTarget;
-
+  const handleExitGame = useCallback(() => {
     setScore(null);
-    startGame();
-  };
+    exitGame();
+  }, [exitGame]);
 
   return (
     <main>
@@ -117,16 +113,7 @@ export default function App() {
       >
         Tutorial
       </Button>
-      <button
-        onClick={() => {
-          const finalScore = scoreMatch(target, blendshapes);
-          setScore(finalScore);
-          setTargetSpinTrigger((value) => value + 1);
-          finishGame(finalScore);
-        }}
-      >
-        Score
-      </button>
+      <button onClick={handleGameComplete}>Score</button>
 
       <Timer
         duration={10}
@@ -135,7 +122,7 @@ export default function App() {
       />
 
       {phase === "finished" && (
-        <GameResultModal score={score} onPlayAgain={handlePlayAgain} />
+        <GameResultModal score={score} onExit={handleExitGame} />
       )}
 
       <div className="scene-wrapper">

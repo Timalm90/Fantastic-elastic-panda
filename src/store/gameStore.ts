@@ -22,6 +22,7 @@ type GameStore = {
   setTargetBlendshapes: (values: BlendshapeValues) => void;
   startGame: () => void;
   finishGame: (score: number) => void;
+  exitGame: () => void;
   updateConfig: (config: Partial<GameConfig>) => void;
 };
 
@@ -53,6 +54,12 @@ export const useGameStore = create<GameStore>()((set) => ({
     set({
       phase: "finished",
       score,
+    }),
+
+  exitGame: () =>
+    set({
+      phase: "idle",
+      score: null,
     }),
 
   updateConfig: (config) =>
