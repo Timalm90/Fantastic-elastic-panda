@@ -91,8 +91,8 @@ export const TargetPanda = React.forwardRef<THREE.Group, TargetPandaProps>(
     }
 
     function getRotationBlendshape(t: number) {
-      if (t >= 0.14 && t < 0.78) {
-        return easeInOut((t - 0.14) / 0.64)
+      if (t >= 0 && t < 0.78) {
+        return easeInOut((t - 0) / 0.64)
       }
 
       if (t >= 0.78 && t <= 1) {
