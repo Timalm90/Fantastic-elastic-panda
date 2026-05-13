@@ -20,17 +20,28 @@ button:active {
   background-color: #022975;
 }
 
+.UI-Debug {
+  position: absolute;
+  top: 700px;
+  left: 100Px;
+  align-items: center;
+
+}
 
 .targetWindow {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 250px;
-  height: 250px;
 
-  border-radius: 30px;
-  padding: 10px;
-  box-sizing: border-box;
+  top: 3%;
+  right: 4%;
+
+  width: 26%;
+  aspect-ratio: 1 / 1;
+
+  min-width: 110px;
+  max-width: 220px;
+
+  border-radius: 24px;
+  overflow: hidden;
 
   background: linear-gradient(
     135deg,
@@ -44,25 +55,19 @@ button:active {
     0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.windowText {
+
+
+.bottom-controls {
   position: absolute;
-  top: 15px;
-  left: 0;
-  right: 0;
 
-  margin: 0;
-  z-index: 10;
+  bottom: 4%;
+  left: 50%;
 
-  text-align: center;
-  pointer-events: none;
+  transform: translateX(-50%);
 
-  color: #ffe57e;
-  font-size: 24px;
-  font-weight: bold;
+  display: flex;
+  gap: 12px;
 
-  text-shadow:
-    0 1px 0 #000,
-    0 2px 0 #000,
-    0 3px 0 #000,
-    0 4px 6px rgba(0, 0, 0, 0.6);
+  z-index: 50;
 }
+
