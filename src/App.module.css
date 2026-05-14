@@ -45,7 +45,7 @@
 .top-bar {
   position: absolute;
 
-  top: max(18px, env(safe-area-inset-top));
+  top: max(28px, calc(env(safe-area-inset-top) + 12px));
   left: max(18px, env(safe-area-inset-left));
 
   height: clamp(90px, 12vw, 140px);

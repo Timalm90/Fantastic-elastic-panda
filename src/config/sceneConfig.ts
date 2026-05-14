@@ -3,7 +3,7 @@
 export const defaultSceneConfig = {
 camera: {
     x: 0,
-    y: -2.2,
+    y: -2.0,
     z: 5.4,
     fov: 56,
     rotationX: 0.2,
@@ -38,8 +38,8 @@ camera: {
 
   light3: {
     color: "#002a82",
-    intensity: 247,
-    distance: 47.8,
+    intensity: 888,
+    distance: 25.7,
     decay: 1.3,
     position: [-2.3, 5.3, 20.2  ],
   },

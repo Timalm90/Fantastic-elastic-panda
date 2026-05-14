@@ -82,7 +82,7 @@ export default function App() {
             <SceneLayout
               config={sceneConfig}
               setConfig={setSceneConfig}
-              debug
+              // debug
               className="main-canvas"
             >
               <PlayerPanda values={blendshapes} springConfig={springConfig} />
@@ -112,6 +112,7 @@ export default function App() {
                   config={sceneConfig}
                   background="#53518d"
                   cameraOverride={{
+                    y: sceneConfig.camera.y * 1.1,
                     z: sceneConfig.camera.z * 0.65,
                   }}
                 >

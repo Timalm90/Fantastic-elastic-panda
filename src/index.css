@@ -67,10 +67,18 @@ body {
 
   aspect-ratio: 9 / 16;
 
-  width: 100vw;
-  height: 100vh;
+  /*
+    Instead of forcing full height,
+    use the SMALLER dimension.
+  */
+  width: min(100vw, 56.25vh);
+  height: min(100vh, 177.77vw);
 
-  max-width: calc(100vh * 9 / 16);
+  /*
+    Prevent giant scaling
+    on modern tall phones
+  */
+  max-width: 520px;
   max-height: 100vh;
 
   overflow: hidden;
@@ -79,7 +87,6 @@ body {
 
   margin-inline: auto;
 }
-
 
 .main-canvas {
   position: absolute !important;
@@ -134,5 +141,13 @@ body {
 
     top: 3%;
     right: 3%;
+  }
+}
+
+
+
+@media (max-width: 430px) {
+  .scene-wrapper {
+    border-radius: 20px;
   }
 }
