@@ -4,72 +4,106 @@
   top: 4%;
   right: 4%;
 
-  width: 48%;
+  /*
+    Responsive sizing
+  */
+  width: clamp(200px, 28vw, 250px);
+
   aspect-ratio: 1 / 1;
-
-  min-width: 110px;
-  max-width: 210px;
-
-  border-radius: 28px;
-
-  overflow: hidden;
 
   z-index: 30;
 
+  border-radius: 30px;
+  padding: 1rem;
+  box-sizing: border-box;
   background: linear-gradient(
-    135deg,
-    #7d76cf 0%,
-    #51458f 45%,
-    #7f72d1 100%
+    180deg,
+    #f78019 10%,
+    #cb5c13 60%,
+    #7a2e0a 90%
   );
 
-  border: 6px solid rgba(255,255,255,0.16);
-
   box-shadow:
-    0 10px 40px rgba(0,0,0,0.35),
-    inset 0 2px 8px rgba(255,255,255,0.18),
-    inset 0 -4px 12px rgba(0,0,0,0.22);
+    inset 1px 0px rgb(207, 101, 8),
+    inset 0px -1px rgb(102, 49, 0),
+    0px 8px rgb(61, 11, 0),
+    0px -2px rgb(255, 164, 80);
+    
 }
 
+
 .targetCanvasWrapper {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  border-radius: 22px;
+
+  overflow: hidden;
+
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.12),
+    inset 0 -4px 8px rgba(0,0,0,0.18);
+}
+
+
+.targetBackground {
   position: absolute;
   inset: 0;
 
-  overflow: hidden;
+  z-index: 0;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      #40226e 20%,
+      #11002c 70%,
+      #0f0024 95%,
+      #000000 100%
+    );
+}
+
+
+
+/*
+  ensure canvas renders above gradient
+*/
+.targetCanvasWrapper canvas {
+  position: relative;
+  z-index: 1;
+
   border-radius: inherit;
 }
 
 
-
-
-.top-bar {
-  position: absolute;
-
-  top: max(28px, calc(env(safe-area-inset-top) + 12px));
-  left: max(18px, env(safe-area-inset-left));
-
-  height: clamp(90px, 12vw, 140px);
-
-  display: flex;
-  align-items: center;
-
-  z-index: 40;
+/*
+  Ensure actual canvas
+  respects rounded corners
+*/
+.targetCanvasWrapper canvas {
+  border-radius: inherit;
 }
 
 .windowText {
   position: absolute;
-  top: 3%;
+
+  top: 15px;
   left: 0;
   right: 0;
 
   margin: 0;
+
   z-index: 10;
 
   text-align: center;
+
   pointer-events: none;
 
   color: #ffe57e;
-  font-size: 24px;
+
+  font-size: clamp(18px, 2vw, 24px);
+
   font-weight: bold;
 
   text-shadow:
@@ -77,4 +111,24 @@
     0 2px 0 #000,
     0 3px 0 #000,
     0 4px 6px rgba(0, 0, 0, 0.6);
+}
+
+/*
+  Smaller phones
+*/
+@media (max-width: 768px) {
+  .targetWindow {
+    width: clamp(180px, 30vw, 150px);
+
+    top: 3%;
+    right: 3%;
+
+    padding: 8px;
+  }
+
+  .windowText {
+    top: 12px;
+
+    font-size: 18px;
+  }
 }

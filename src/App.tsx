@@ -107,27 +107,28 @@ export default function App() {
             <div className={styles.targetWindow}>
               <h1 className={styles.windowText}>TARGET</h1>
 
-              <div className={styles.targetCanvasWrapper}>
-                <SceneLayout
-                  config={sceneConfig}
-                  background="#53518d"
-                  cameraOverride={{
-                    y: sceneConfig.camera.y * 1.1,
-                    z: sceneConfig.camera.z * 0.65,
-                  }}
-                >
-                  {" "}
-                  <group position={[0, yOffset, zOffset]}>
-                    <TargetPanda
-                      values={target}
-                      spinTrigger={targetSpinTrigger}
-                      spinStartDegrees={TARGET_SPIN_START_DEGREES}
-                      spinDurationMs={TARGET_SPIN_DURATION_MS}
-                      onSpinCovered={() => setTarget(randomFace())}
-                    />
-                  </group>
-                </SceneLayout>
-              </div>
+     <div className={styles.targetCanvasWrapper}>
+  <div className={styles.targetBackground} />
+
+  <SceneLayout
+    config={sceneConfig}
+    background={null}
+    cameraOverride={{
+      y: sceneConfig.camera.y * 1.1,
+      z: sceneConfig.camera.z * 0.65,
+    }}
+  >
+    <group position={[0, yOffset, zOffset]}>
+      <TargetPanda
+        values={target}
+        spinTrigger={targetSpinTrigger}
+        spinStartDegrees={TARGET_SPIN_START_DEGREES}
+        spinDurationMs={TARGET_SPIN_DURATION_MS}
+        onSpinCovered={() => setTarget(randomFace())}
+      />
+    </group>
+  </SceneLayout>
+</div>
             </div>
 
             <div className="bottom-controls">
