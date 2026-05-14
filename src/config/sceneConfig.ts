@@ -11,7 +11,7 @@ camera: {
 
   environment: {
     preset: "dawn",
-    intensity: 0.32,
+    intensity: 0.2,
     blur: 0.7,
     rotation: -0.65,
   },
@@ -30,16 +30,16 @@ camera: {
 
   light2: {
     color: "#ba6040",
-    intensity: 31,
-    distance: 15.8,
-    decay: 1.1,
-    position: [0.0, -3.5, -1.3],
+    intensity: 161,
+    distance: 23.6,
+    decay: 0.9,
+    position: [0.0, -3.5, -3.4],
   },
 
   light3: {
-    color: "#002a82",
+    color: "#823f00",
     intensity: 888,
-    distance: 25.7,
+    distance: 26.5,
     decay: 1.3,
     position: [-2.3, 5.3, 20.2  ],
   },
