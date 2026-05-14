@@ -22,7 +22,7 @@ const ZONE_POSITIONS = {
   nose:    { top: '63%', left: '50%' },
 
   mouth:   { top: '72%', left: '50%' },
-}
+} as const
 const OFFSET_FRACTION = 0.06
 
 export const FaceControls: React.FC<FaceControlsProps> = ({
@@ -59,7 +59,8 @@ export const FaceControls: React.FC<FaceControlsProps> = ({
   }, [blendshapes, onBlendshapesChange])
 
   const getZoneStyle = useCallback((zone: ControlZone): React.CSSProperties => {
-    const baseStyle = ZONE_POSITIONS[zone.id] || {}
+    const baseStyle =
+      ZONE_POSITIONS[zone.id as keyof typeof ZONE_POSITIONS] || {}
     const { width: wrapperWidth, height: wrapperHeight } = wrapperSize
 
     const zoneSize = wrapperWidth * 0.18
