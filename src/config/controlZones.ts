@@ -28,7 +28,7 @@ export const CONTROL_ZONES: ControlZone[] = [
     maxValue: 0.5,
 
     displayOffsetYPositive: 0.2,
-    displayOffsetYNegative: 0.05,
+    displayOffsetYNegative: 0.1,
     displayOffsetXNegative: 0.3,
     displayOffsetXPositive: 0.15,
 
@@ -68,9 +68,9 @@ export const CONTROL_ZONES: ControlZone[] = [
     y: { positive: 'R_Cheek_Up', negative: 'R_Cheek_Down' },
 
     
-    displayOffsetYPositive: 0.05,
+    displayOffsetYPositive: 0.15,
     displayOffsetYNegative: 0.15,
-    displayOffsetXPositive: 0.25,
+    displayOffsetXPositive: 0.15,
     
     dragDistanceX: 100,
     dragDistanceY: 100,
@@ -84,9 +84,9 @@ export const CONTROL_ZONES: ControlZone[] = [
     y: { positive: 'L_Cheek_Up', negative: 'L_Cheek_Down' },
 
     
-    displayOffsetYPositive: 0.05,
+    displayOffsetYPositive: 0.15,
     displayOffsetYNegative: 0.15,
-    displayOffsetXNegative: 0.25,
+    displayOffsetXNegative: 0.15,
     
     dragDistanceX: 100,
     dragDistanceY: 100,

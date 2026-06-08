@@ -300,6 +300,12 @@ const handlePlayAgain = useCallback(() => {
               onBlendshapesChange={setBlendshapes}
               resetTrigger={resetTrigger}
               disabled={freezeControls || isAnyModalOpen}
+              onSnapBack={() => {
+              setSpringConfig({ stiffness: 180, damping: 10, mass: 1.4 });
+              setTimeout(() => {
+             setSpringConfig({ stiffness: 100, damping: 14, mass: 1 });
+              }, 1200);
+  }}
             />
           </div>
 

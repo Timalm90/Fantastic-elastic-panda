@@ -8,36 +8,36 @@ interface FaceControlsProps {
   onBlendshapesChange?: (blendshapes: BlendshapeValues) => void
   resetTrigger?: number
   disabled?: boolean
+  /** Called when any zone snaps back — lets the parent apply a spring config burst */
+  onSnapBack?: () => void
 }
 
 const ZONE_POSITIONS = {
   r_ear:   { top: '45%', left: '80%' },
   l_ear:   { top: '45%', left: '20%' },
-
   r_brow:  { top: '49%', left: '62%' },
   l_brow:  { top: '49%', left: '38%' },
-
   r_cheek: { top: '63%', left: '70%' },
   l_cheek: { top: '63%', left: '30%' },
-
   nose:    { top: '60%', left: '50%' },
-
   mouth:   { top: '72%', left: '50%' },
 } as const
+
 const OFFSET_FRACTION = 0.06
 
 export const FaceControls: React.FC<FaceControlsProps> = ({
   onBlendshapesChange,
   resetTrigger,
   disabled = false,
+  onSnapBack,
 }) => {
   const [blendshapes, setBlendshapes] = useState<BlendshapeValues>({} as BlendshapeValues)
   const [wrapperSize, setWrapperSize] = useState({ width: 300, height: 500 })
+  const [snappingZones, setSnappingZones] = useState<Set<string>>(new Set())
 
   const wrapperRef = useRef<HTMLDivElement>(null)
-  const { startDrag, applyDrag } = useBlendshapeControl(blendshapes, setBlendshapes)
+  const { startDrag, applyDrag, snapBack } = useBlendshapeControl(blendshapes, setBlendshapes)
 
-  // Reset all internal blendshape state and notify parent
   useEffect(() => {
     if (!resetTrigger) return
     const empty = {} as BlendshapeValues
@@ -60,11 +60,22 @@ export const FaceControls: React.FC<FaceControlsProps> = ({
     onBlendshapesChange?.(blendshapes)
   }, [blendshapes, onBlendshapesChange])
 
-  const getZoneStyle = useCallback((zone: ControlZone): React.CSSProperties => {
-    const baseStyle =
-      ZONE_POSITIONS[zone.id as keyof typeof ZONE_POSITIONS] || {}
-    const { width: wrapperWidth, height: wrapperHeight } = wrapperSize
+  const handleSnapBack = useCallback((zone: ControlZone) => {
+    snapBack(zone)
+    onSnapBack?.()
+    setSnappingZones(prev => new Set(prev).add(zone.id))
+    setTimeout(() => {
+      setSnappingZones(prev => {
+        const next = new Set(prev)
+        next.delete(zone.id)
+        return next
+      })
+    }, 400)
+  }, [snapBack, onSnapBack])
 
+  const getZoneStyle = useCallback((zone: ControlZone): React.CSSProperties => {
+    const baseStyle = ZONE_POSITIONS[zone.id as keyof typeof ZONE_POSITIONS] || {}
+    const { width: wrapperWidth, height: wrapperHeight } = wrapperSize
     const zoneSize = wrapperWidth * 0.20
 
     let offsetX = 0
@@ -86,36 +97,41 @@ export const FaceControls: React.FC<FaceControlsProps> = ({
       offsetY = -(pos * maxPos) + (neg * maxNeg)
     }
 
+    const isSnapping = snappingZones.has(zone.id)
+
     return {
       ...baseStyle,
       width: `${zoneSize}px`,
       height: `${zoneSize}px`,
       transform: `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px))`,
-      transition: 'transform 0s ease-out',
+      transition: isSnapping
+        ? 'transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1)'
+        : 'transform 0s ease-out',
     }
-  }, [blendshapes, wrapperSize])
+  }, [blendshapes, wrapperSize, snappingZones])
 
   return (
-<div
-  ref={wrapperRef}
-  style={{
-    position: 'absolute',
-    inset: 0,
-    pointerEvents: disabled ? 'none' : 'auto',
-  }}
->      
-{CONTROL_ZONES.map((zone: ControlZone) => (
-<DragZone
-  key={zone.id}
-  zone={zone}
-  onDragStart={startDrag}
-  onDrag={applyDrag}
-  onRelease={() => {}}
-  style={{
-    ...getZoneStyle(zone),
-    pointerEvents: disabled ? 'none' : 'auto',
-  }}
-/>
+    <div
+      ref={wrapperRef}
+      style={{
+        position: 'absolute',
+        inset: 0,
+        pointerEvents: disabled ? 'none' : 'auto',
+      }}
+    >
+      {CONTROL_ZONES.map((zone: ControlZone) => (
+        <DragZone
+          key={zone.id}
+          zone={zone}
+          onDragStart={startDrag}
+          onDrag={applyDrag}
+          onRelease={() => {}}
+          onSnapBack={handleSnapBack}
+          style={{
+            ...getZoneStyle(zone),
+            pointerEvents: disabled ? 'none' : 'auto',
+          }}
+        />
       ))}
     </div>
   )
