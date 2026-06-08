@@ -8,14 +8,13 @@ type TutorialModalProps = {
 };
 
 const SLIDES = [
-
   {
-      title: "Controls",
+    title: "Controls",
     content: (
       <>
         <p>
-          Drag the panda’s face using your finger or mouse to match the target
-          expression before time runs out.
+          Drag the panda’s face with your finger or mouse to recreate the target
+          expression before the timer runs out.
         </p>
 
         <video
@@ -33,12 +32,19 @@ const SLIDES = [
   },
   {
     title: "Good luck",
-    content: 
-    <>
-    <p>Press Play when you're ready. Have fun and try to top the scoreboard!</p>
-    <br></br>
-    <p>Best of luck! / Tim & Robin</p>
-  </>
+    content: (
+      <>
+        <p>
+          The closer your expression matches the target, the more points you'll
+          earn. When you're ready, press Play and see how high you can climb on
+          the scoreboard!
+        </p>
+
+        <br />
+
+        <p>Good luck and have fun! / Tim & Robin</p>
+      </>
+    ),
   },
 ];
 
